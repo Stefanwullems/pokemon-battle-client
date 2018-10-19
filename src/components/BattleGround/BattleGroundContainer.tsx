@@ -1,10 +1,26 @@
 import * as React from "react";
 import BattleGround from "./BattleGround";
+import { connect } from "react-redux";
+import fetchPokemon from "../../actions/pokemon/get-pokemon";
+import switchTurn from "../../actions/battle/switch-turn";
 
-class BattleGroundContainer extends React.Component {
+interface IProps {
+  fetchPokemon: (id1: number, id2: number) => void;
+  switchTurn: () => void;
+}
+
+class BattleGroundContainer extends React.Component<IProps> {
+  componentDidMount() {
+    this.props.fetchPokemon(1, 2);
+    this.props.switchTurn();
+  }
+
   render() {
     return <BattleGround />;
   }
 }
 
-export default BattleGroundContainer;
+export default connect(
+  null,
+  { fetchPokemon, switchTurn }
+)(BattleGroundContainer);
