@@ -39,3 +39,6 @@ export function fetchPokemon(id1: number, id2: number) {
       });
   };
 }
+
+
+
