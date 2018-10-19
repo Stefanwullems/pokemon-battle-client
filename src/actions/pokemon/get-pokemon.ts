@@ -15,8 +15,13 @@ export function fetchPokemon(id1: number, id2: number) {
     .query({
       query: gql`
         {
-          pokemon(id: 1) {
+          pokemon(id: ${id1}) {
             name
+            hp
+            attack
+            defense
+            speed
+            [moves]
           }
         }
       `
@@ -32,8 +37,13 @@ export function fetchPokemon(id1: number, id2: number) {
     .query({
       query: gql`
         {
-          pokemon(id: 2) {
+          pokemon(id: ${id2}) {
             name
+            hp
+            attack
+            defense
+            speed
+            [moves]
           }
         }
       `
