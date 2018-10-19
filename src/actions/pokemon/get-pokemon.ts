@@ -8,10 +8,11 @@ const client = new ApolloClient({
 
 
 
-export function fetchPokemon(id1: number, id2: number) {
+export default function(id1: number, id2: number) {
   return function(dispatch) {
 
     client
+
     .query({
       query: gql`
         {
@@ -34,6 +35,7 @@ export function fetchPokemon(id1: number, id2: number) {
     });
 
     client
+
     .query({
       query: gql`
         {
@@ -44,6 +46,7 @@ export function fetchPokemon(id1: number, id2: number) {
             defense
             speed
             [moves]
+
           }
         }
       `
