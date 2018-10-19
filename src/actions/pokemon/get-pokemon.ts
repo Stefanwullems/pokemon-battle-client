@@ -7,13 +7,15 @@ const client = new ApolloClient({
 export const POKEMON1_FETCHED = "POKEMON1_FETCHED";
 export const POKEMON2_FETCHED = "POKEMON2_FETCHED";
 
-export function fetchPokemon(id1: number, id2: number) {
+export default function(id1: number, id2: number) {
   return function(dispatch) {
     client
       .query({
         query: gql`
           {
-            pokemon(id: ${id1})
+            pokemon(id: ${id1}){
+              name
+            }
           }
         `
       })
@@ -27,7 +29,9 @@ export function fetchPokemon(id1: number, id2: number) {
       .query({
         query: gql`
           {
-            pokemon(id: ${id2})
+            pokemon(id: ${id2}){
+              name
+            }
           }
         `
       })
