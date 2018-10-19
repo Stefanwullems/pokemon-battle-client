@@ -1,5 +1,5 @@
-import { POKEMON1_FETCHED } from "../actions/pokemon/get-pokemon";
 
+export const POKEMON1_FETCHED = "POKEMON1_FETCHED";
 export default function(state = {}, { type, payload }) {
   switch (type) {
     case POKEMON1_FETCHED:
