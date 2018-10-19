@@ -6,56 +6,57 @@ const client = new ApolloClient({
   uri: "http://localhost:4011/graphql"
 });
 
-
-
 export default function(id1: number, id2: number) {
   return function(dispatch) {
-
     client
 
-    .query({
-      query: gql`
+      .query({
+        query: gql`
         {
           pokemon(id: ${id1}) {
             name
             hp
             attack
-            defense
-            speed
-            [moves]
+            def
+            spd
+            moves{
+              name
+            }
           }
         }
       `
-    })
-    .then((res: any) => {
-      dispatch({
-        type: POKEMON1_FETCHED,
-        payload: res.data.pokemon
+      })
+      .then((res: any) => {
+        dispatch({
+          type: POKEMON1_FETCHED,
+          payload: res.data.pokemon
+        });
       });
-    });
 
     client
 
-    .query({
-      query: gql`
+      .query({
+        query: gql`
         {
           pokemon(id: ${id2}) {
             name
             hp
             attack
-            defense
-            speed
-            [moves]
+            def
+            spd
+            moves{
+              name
+            }
 
           }
         }
       `
-    })
-    .then((res: any) => {
-      dispatch({
-        type: POKEMON2_FETCHED,
-        payload: res.data.pokemon
+      })
+      .then((res: any) => {
+        dispatch({
+          type: POKEMON2_FETCHED,
+          payload: res.data.pokemon
+        });
       });
-    });
   };
 }
