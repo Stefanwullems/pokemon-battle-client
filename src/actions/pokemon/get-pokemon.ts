@@ -1,41 +1,58 @@
 import ApolloClient, { gql } from "apollo-boost";
+import { POKEMON1_FETCHED } from "../../reducers/pokemon1";
+import { POKEMON2_FETCHED } from "../../reducers/pokemon2";
 
 const client = new ApolloClient({
   uri: "http://localhost:4011/graphql"
 });
 
-export const POKEMON1_FETCHED = "POKEMON1_FETCHED";
-export const POKEMON2_FETCHED = "POKEMON2_FETCHED";
+
 
 export function fetchPokemon(id1: number, id2: number) {
   return function(dispatch) {
+
     client
-      .query({
-        query: gql`
-          {
-            pokemon(id: ${id1})
+    .query({
+      query: gql`
+        {
+          pokemon(id: ${id1}) {
+            name
+            hp
+            attack
+            defense
+            speed
+            [moves]
           }
-        `
-      })
-      .then((res: any) => {
-        dispatch({
-          type: POKEMON1_FETCHED,
-          payload: res.data.pokemon
-        });
+        }
+      `
+    })
+    .then((res: any) => {
+      dispatch({
+        type: POKEMON1_FETCHED,
+        payload: res.data.pokemon
       });
+    });
+
     client
-      .query({
-        query: gql`
-          {
-            pokemon(id: ${id2})
+    .query({
+      query: gql`
+        {
+          pokemon(id: ${id2}) {
+            name
+            hp
+            attack
+            defense
+            speed
+            [moves]
           }
-        `
-      })
-      .then((res: any) => {
-        dispatch({
-          type: POKEMON2_FETCHED,
-          payload: res.data.pokemon
-        });
+        }
+      `
+    })
+    .then((res: any) => {
+      dispatch({
+        type: POKEMON2_FETCHED,
+        payload: res.data.pokemon
       });
+    });
   };
 }
