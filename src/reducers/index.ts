@@ -4,5 +4,7 @@ import { combineReducers } from "redux";
 import playerParty from "./playerParty";
 import opponentParty from "./opponentParty";
 import turn from "./turn";
+import games from './games'
 
-export default combineReducers({ playerParty, opponentParty, turn });
+export default combineReducers({ playerParty, opponentParty, turn, games});
+
