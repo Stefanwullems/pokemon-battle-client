@@ -1,18 +1,22 @@
-export const PLAYER_ATTACKED = "PLAYER_ATTACKED";
-export const OPPONENT_ATTACKED = "OPPONENT_ATTACKED";
+export const PLAYER_GOT_ATTACKED = "PLAYER_GOT_ATTACKED";
+export const OPPONENT_GOT_ATTACKED = "OPPONENT_GOT_ATTACKED";
 
-export function attack(attacker, defender, move, turn) {
-  const damage = (attacker.attack / defender.defense) * move.damage * 0.06;
+export default function(attacker, defender, move, turn) {
+  const damage =
+    (attacker.stats.attack / defender.stats.defense) * move.damage * 0.06;
+  console.log(damage);
   const newDefender = { ...defender };
-  newDefender.hp -= damage;
-  if (turn === "player") {
+  console.log("1", newDefender.stats.hp);
+  newDefender.stats.hp = newDefender.stats.hp - damage;
+  console.log("2", newDefender.stats.hp);
+  if (turn === "opponent") {
     return {
-      type: PLAYER_ATTACKED,
+      type: PLAYER_GOT_ATTACKED,
       payload: newDefender
     };
-  } else if (turn === "opponent") {
+  } else if (turn === "player") {
     return {
-      type: OPPONENT_ATTACKED,
+      type: OPPONENT_GOT_ATTACKED,
       payload: newDefender
     };
   }
