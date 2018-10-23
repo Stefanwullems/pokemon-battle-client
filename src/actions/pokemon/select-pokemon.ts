@@ -6,7 +6,8 @@ export default function(id: number, from: string) {
     if (from === "player") {
       const pokemon = getState().playerParty.filter(
         pokemon => pokemon.id === id
-      );
+      )[0];
+      console.log(pokemon);
       dispatch({
         type: PLAYER_SELECTED_POKEMON,
         payload: pokemon
@@ -15,7 +16,7 @@ export default function(id: number, from: string) {
     if (from === "opponent") {
       const pokemon = getState().opponentParty.filter(
         pokemon => pokemon.id === id
-      );
+      )[0];
 
       dispatch({
         type: OPPONENT_SELECTED_POKEMON,

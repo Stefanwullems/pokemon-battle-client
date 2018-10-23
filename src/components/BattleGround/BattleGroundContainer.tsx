@@ -5,6 +5,8 @@ import fetchPokemon from "../../actions/pokemon/get-pokemon";
 import switchTurn from "../../actions/gameLogic/switch-turn";
 import selectPokemon from "../../actions/pokemon/select-pokemon";
 import newTurn from "../../actions/gameLogic/new-turn";
+import getTurnOrder from "../../scripts/turn-order";
+import attack from "../../actions/gameLogic/attack";
 
 interface IProps {
   fetchPokemon: (playerPartyIds: number[], opponentPartyIds: number[]) => void;
@@ -13,9 +15,15 @@ interface IProps {
   newTurn: () => void;
   playerPokemon: any;
   opponentPokemon: any;
+  turn: number;
+  attack: (attacker, defender, move, turn) => void;
 }
 
 class BattleGroundContainer extends React.Component<IProps> {
+  state = {
+    move: true,
+    turnOrder: []
+  };
   async componentDidMount() {
     const { fetchPokemon, selectPokemon } = this.props;
 
@@ -24,17 +32,76 @@ class BattleGroundContainer extends React.Component<IProps> {
     selectPokemon(2, "player");
   }
 
+  componentDidUpdate() {
+    const {
+      playerPokemon,
+      opponentPokemon,
+      switchTurn,
+      turn,
+      newTurn
+    } = this.props;
+    if (this.state.move) {
+      if (
+        !this.state.turnOrder.length &&
+        playerPokemon.stats &&
+        opponentPokemon.stats
+      ) {
+        this.setState({
+          turnOrder: getTurnOrder({
+            playerPokemon,
+            opponentPokemon
+          })
+        });
+      }
+      if (this.state.turnOrder.length) {
+        if (this.state.turnOrder[turn] === "opponent") {
+          this.props.attack(
+            opponentPokemon,
+            playerPokemon,
+            { damage: 10 },
+            "opponent"
+          );
+          if (turn === 0) {
+            switchTurn();
+          } else {
+            this.setState({
+              move: false
+            });
+            newTurn();
+          }
+        }
+        if (this.state.turnOrder[turn] === "player") {
+          this.props.attack(
+            playerPokemon,
+            opponentPokemon,
+            { damage: 10 },
+            "player"
+          );
+          if (turn === 0) {
+            switchTurn();
+          } else {
+            this.setState({
+              move: false
+            });
+            newTurn();
+          }
+        }
+      }
+    }
+  }
+
   render() {
     return <BattleGround />;
   }
 }
 
-const mapStateToProps = ({ playerPokemon, opponentPokemon }) => ({
+const mapStateToProps = ({ playerPokemon, opponentPokemon, turn }) => ({
   playerPokemon,
-  opponentPokemon
+  opponentPokemon,
+  turn
 });
 
 export default connect(
   mapStateToProps,
-  { fetchPokemon, switchTurn, selectPokemon, newTurn }
+  { fetchPokemon, switchTurn, selectPokemon, newTurn, attack }
 )(BattleGroundContainer);
