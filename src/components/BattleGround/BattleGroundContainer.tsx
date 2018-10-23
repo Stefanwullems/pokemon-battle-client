@@ -1,5 +1,5 @@
 import * as React from "react";
-import BattleGround from "./BattleGround";
+// import BattleGround from "./BattleGround";
 import { connect } from "react-redux";
 import fetchPokemon from "../../actions/pokemon/get-pokemon";
 import switchTurn from "../../actions/gameLogic/switch-turn";
@@ -52,6 +52,7 @@ class BattleGroundContainer extends React.Component<IProps> {
     }
   }
 
+
   setTurnOrder() {
     const { playerPokemon, opponentPokemon } = this.props;
     if (
@@ -63,6 +64,8 @@ class BattleGroundContainer extends React.Component<IProps> {
       });
     }
   }
+
+
 
   handleAttack() {
     const turn: Role = this.state.turnOrder[this.props.turn];
