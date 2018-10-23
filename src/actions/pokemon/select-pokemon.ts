@@ -1,7 +1,9 @@
+import { ISelectPokemonParams } from "../../tools/interfaces";
+
 export const PLAYER_SELECTED_POKEMON = "PLAYER_SELECTED_POKEMON";
 export const OPPONENT_SELECTED_POKEMON = "OPPONENT_SELECTED_POKEMON";
 
-export default function(id: number, from: string) {
+export default function({ id, from }: ISelectPokemonParams) {
   return function(dispatch, getState) {
     if (from === "player") {
       const pokemon = getState().playerParty.filter(
