@@ -1,15 +1,11 @@
-
-import { ATTACKED2 } from "../actions/battle/attackAction"
+import { OPPONENT_ATTACKED } from "../actions/gameLogic/attack";
 
 export const POKEMON2_FETCHED = "POKEMON2_FETCHED";
 
-
 export default function(state = {}, { type, payload }) {
   switch (type) {
-    case POKEMON2_FETCHED:
+    case OPPONENT_ATTACKED:
       return payload;
-     case ATTACKED2:
-      return payload 
     default:
       return state;
   }

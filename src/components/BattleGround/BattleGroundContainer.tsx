@@ -2,17 +2,16 @@ import * as React from "react";
 import BattleGround from "./BattleGround";
 import { connect } from "react-redux";
 import fetchPokemon from "../../actions/pokemon/get-pokemon";
-import switchTurn from "../../actions/battle/switch-turn";
+import switchTurn from "../../actions/gameLogic/switch-turn";
 
 interface IProps {
-  fetchPokemon: (id1: number, id2: number) => void;
+  fetchPokemon: (pplayerPartyIds: number[], opponentPartyIds: number[]) => void;
   switchTurn: () => void;
 }
 
 class BattleGroundContainer extends React.Component<IProps> {
   componentDidMount() {
-    this.props.fetchPokemon(1, 2);
-    this.props.switchTurn();
+    this.props.fetchPokemon([2, 5], [5, 8]);
   }
 
   render() {
