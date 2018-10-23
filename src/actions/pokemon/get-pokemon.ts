@@ -39,6 +39,7 @@ function queryForPokemon(id) {
         {
           pokemon(id: ${id}) {
             name
+            id
             types{
               name
               normal_multiplier

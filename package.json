@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.2.2",
+    "@material-ui/icons": "latest",
     "@types/graphql": "^14.0.3",
     "@types/react-redux": "^6.0.9",
     "@types/redux": "^3.6.0",
@@ -15,10 +17,12 @@
     "react-apollo": "^2.2.4",
     "react-dom": "^16.5.2",
     "react-redux": "^5.0.7",
+    "react-router-dom": "^4.3.1",
     "react-scripts-ts": "3.1.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
-    "socket.io-client": "^2.1.1"
+    "socket.io-client": "^2.1.1",
+    "superagent": "^4.0.0-beta.5"
   },
   "scripts": {
     "start": "react-scripts-ts start",
