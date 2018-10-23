@@ -9,6 +9,7 @@
     "@types/react-redux": "^6.0.9",
     "@types/redux": "^3.6.0",
     "@types/redux-thunk": "^2.1.0",
+    "@types/socket.io-client": "^1.4.32",
     "apollo-boost": "^0.1.16",
     "graphql": "^14.0.2",
     "graphql-tag": "^2.10.0",
@@ -16,10 +17,12 @@
     "react-apollo": "^2.2.4",
     "react-dom": "^16.5.2",
     "react-redux": "^5.0.7",
+    "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-scripts-ts": "3.1.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
+    "socket.io-client": "^2.1.1",
     "superagent": "^4.0.0-beta.5"
   },
   "scripts": {
