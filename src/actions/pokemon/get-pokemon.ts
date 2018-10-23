@@ -1,3 +1,4 @@
+import { IFetchParams, IPokemon } from "../../tools/interfaces";
 import ApolloClient, { gql } from "apollo-boost";
 
 const client = new ApolloClient({
@@ -7,7 +8,7 @@ const client = new ApolloClient({
 export const SET_PLAYER_PARTY = "SET_PLAYER_PARTY";
 export const SET_OPPONENT_PARTY = "SET_OPPONENT_PARTY";
 
-export default function(playerPartyIds: number[], opponentPartyIds: number[]) {
+export default function({ playerPartyIds, opponentPartyIds }: IFetchParams) {
   return async function(dispatch) {
     const playerParty = await mapPokemonToId(playerPartyIds);
 
@@ -23,11 +24,11 @@ export default function(playerPartyIds: number[], opponentPartyIds: number[]) {
   };
 }
 
-async function mapPokemonToId(partyIds: number[]) {
-  const party: any[] = [];
+async function mapPokemonToId(partyIds: number[]): Promise<IPokemon[]> {
+  const party: IPokemon[] = [];
   for (let i = 0; i < partyIds.length; i++) {
     await queryForPokemon(partyIds[i]).then((res: any) =>
-      party.push(res.data.pokemon)
+      party.push(res.data.pokemon as IPokemon)
     );
   }
   return party;

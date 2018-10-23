@@ -1,4 +1,4 @@
-export const NEW_TURN = "SWITCH_TURN";
+export const NEW_TURN = "NEW_TURN";
 
 export default function() {
   return {

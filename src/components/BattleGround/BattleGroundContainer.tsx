@@ -7,97 +7,104 @@ import selectPokemon from "../../actions/pokemon/select-pokemon";
 import newTurn from "../../actions/gameLogic/new-turn";
 import getTurnOrder from "../../scripts/turn-order";
 import attack from "../../actions/gameLogic/attack";
+import {
+  IPokemon,
+  IAttack,
+  Role,
+  IFetchParams,
+  ISelectPokemonParams
+} from "../../tools/interfaces";
 
 interface IProps {
-  fetchPokemon: (playerPartyIds: number[], opponentPartyIds: number[]) => void;
+  fetchPokemon: (fetchParams: IFetchParams) => void;
   switchTurn: () => void;
-  selectPokemon: (id: number, from: string) => void;
+  selectPokemon: (selectPokemonParams: ISelectPokemonParams) => void;
   newTurn: () => void;
-  playerPokemon: any;
-  opponentPokemon: any;
+  playerPokemon: IPokemon;
+  opponentPokemon: IPokemon;
   turn: number;
-  attack: (attacker, defender, move, turn) => void;
+  attack: (attack: IAttack) => void;
 }
 
 class BattleGroundContainer extends React.Component<IProps> {
   state = {
-    move: true,
+    move: false,
     turnOrder: []
   };
 
   async componentDidMount() {
     const { fetchPokemon, selectPokemon } = this.props;
 
-    await fetchPokemon([2, 5], [5, 8]);
-    selectPokemon(5, "opponent");
-    selectPokemon(2, "player");
+    await fetchPokemon({ playerPartyIds: [2, 5], opponentPartyIds: [5, 8] });
+    selectPokemon({ id: 5, from: "opponent" });
+    selectPokemon({ id: 2, from: "player" });
   }
 
   componentDidUpdate() {
-    const {
-      playerPokemon,
-      opponentPokemon,
-      switchTurn,
-      turn,
-      newTurn
-    } = this.props;
+    if (!this.state.turnOrder.length) {
+      this.setTurnOrder();
+    }
     if (this.state.move) {
-      if (
-        !this.state.turnOrder.length &&
-        playerPokemon.stats &&
-        opponentPokemon.stats
-      ) {
-        this.setState({
-          turnOrder: getTurnOrder({
-            playerPokemon,
-            opponentPokemon
-          })
-        });
-      }
       if (this.state.turnOrder.length) {
-        if (this.state.turnOrder[turn] === "opponent") {
-          this.props.attack(
-            opponentPokemon,
-            playerPokemon,
-            { damage: 10 },
-            "opponent"
-          );
-          if (turn === 0) {
-            switchTurn();
-          } else {
-            this.setState({
-              move: false
-            });
-            newTurn();
-          }
-        }
-        if (this.state.turnOrder[turn] === "player") {
-          this.props.attack(
-            playerPokemon,
-            opponentPokemon,
-            { damage: 10 },
-            "player"
-          );
-          if (turn === 0) {
-            switchTurn();
-          } else {
-            this.setState({
-              move: false
-            });
-            newTurn();
-          }
-        }
+        this.handleAttack();
+        this.handleTurn();
       }
     }
   }
+
+
+  setTurnOrder() {
+    const { playerPokemon, opponentPokemon } = this.props;
+    if (
+      Object.keys(playerPokemon).length &&
+      Object.keys(opponentPokemon).length
+    ) {
+      this.setState({
+        turnOrder: getTurnOrder({ playerPokemon, opponentPokemon })
+      });
+    }
+  }
+
+
+
+  handleAttack() {
+    const turn: Role = this.state.turnOrder[this.props.turn];
+    this.props.attack({
+      attacker:
+        turn === "opponent"
+          ? this.props.opponentPokemon
+          : this.props.playerPokemon,
+      defender:
+        turn === "opponent"
+          ? this.props.playerPokemon
+          : this.props.opponentPokemon,
+      move:
+        turn === "opponent"
+          ? this.props.opponentPokemon.moves[0]
+          : this.props.playerPokemon.moves[0],
+      turn
+    });
+  }
+
+  handleTurn() {
+    if (this.props.turn === 0) {
+      this.props.switchTurn();
+    } else {
+      this.props.newTurn();
+      this.setState({
+        move: false
+      });
+    }
+  }
+
+  onAttackButtonClick() {
+    this.setState({ move: true });
+  }
+
+  render() {
+    return <BattleGround attack={this.onAttackButtonClick.bind(this)} />;
+  }
 }
-
-// class BattleGroundContainer extends React.Component<IProps> {
-//   componentDidMount() {
-//     this.props.fetchPokemon(1, 2);
-//     this.props.switchTurn();
-//   }
-
 
 const mapStateToProps = ({ playerPokemon, opponentPokemon, turn }) => ({
   playerPokemon,

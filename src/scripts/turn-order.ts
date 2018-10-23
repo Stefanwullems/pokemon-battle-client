@@ -1,9 +1,11 @@
+import { ITurnOrderOptions, ITurnOrder } from "../tools/interfaces";
+
 export default function({
   playerPokemon,
   opponentPokemon,
   playerMove,
   opponentMove
-}: ITurnOrderOptions) {
+}: ITurnOrderOptions): ITurnOrder | undefined {
   if (
     !(playerMove && opponentMove) ||
     playerMove.priority === opponentMove.priority
@@ -18,11 +20,4 @@ export default function({
   } else {
     return ["opponent", "player"];
   }
-}
-
-interface ITurnOrderOptions {
-  playerPokemon: any;
-  opponentPokemon: any;
-  playerMove?: any;
-  opponentMove?: any;
 }
