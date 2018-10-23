@@ -90,10 +90,13 @@ class BattleGroundContainer extends React.Component<IProps> {
     }
   }
 
-  render() {
-    return <BattleGround />;
-  }
-}
+
+// class BattleGroundContainer extends React.Component<IProps> {
+//   componentDidMount() {
+//     this.props.fetchPokemon(1, 2);
+//     this.props.switchTurn();
+//   }
+
 
 const mapStateToProps = ({ playerPokemon, opponentPokemon, turn }) => ({
   playerPokemon,
