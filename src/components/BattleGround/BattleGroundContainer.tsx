@@ -1,5 +1,5 @@
 import * as React from "react";
-// import BattleGround from "./BattleGround";
+import BattleGround from "./BattleGround";
 import { connect } from "react-redux";
 import fetchPokemon from "../../actions/pokemon/get-pokemon";
 import switchTurn from "../../actions/gameLogic/switch-turn";
@@ -7,12 +7,14 @@ import selectPokemon from "../../actions/pokemon/select-pokemon";
 import newTurn from "../../actions/gameLogic/new-turn";
 import getTurnOrder from "../../scripts/turn-order";
 import attack from "../../actions/gameLogic/attack";
+import selectMove from "../../actions/gameLogic/select-move";
 import {
   IPokemon,
   IAttack,
   Role,
   IFetchParams,
-  ISelectPokemonParams
+  ISelectPokemonParams,
+  ISelectMoveParams
 } from "../../tools/interfaces";
 
 interface IProps {
@@ -20,10 +22,13 @@ interface IProps {
   switchTurn: () => void;
   selectPokemon: (selectPokemonParams: ISelectPokemonParams) => void;
   newTurn: () => void;
+  selectMove: (selectMoveParams: ISelectMoveParams) => void;
+  attack: (attack: IAttack) => void;
   playerPokemon: IPokemon;
   opponentPokemon: IPokemon;
   turn: number;
-  attack: (attack: IAttack) => void;
+  playerMove: string;
+  opponentMove: string;
 }
 
 class BattleGroundContainer extends React.Component<IProps> {
@@ -41,17 +46,22 @@ class BattleGroundContainer extends React.Component<IProps> {
   }
 
   componentDidUpdate() {
-    if (!this.state.turnOrder.length) {
-      this.setTurnOrder();
-    }
     if (this.state.move) {
-      if (this.state.turnOrder.length) {
-        this.handleAttack();
-        this.handleTurn();
+      console.log(this.props.playerMove, this.props.opponentMove);
+      if (this.props.playerMove && this.props.opponentMove) {
+        console.log(2);
+        if (!this.state.turnOrder.length) {
+          console.log(3);
+          this.setTurnOrder();
+        }
+        if (this.state.turnOrder.length) {
+          console.log(4);
+          this.handleAttack();
+          this.handleTurn();
+        }
       }
     }
   }
-
 
   setTurnOrder() {
     const { playerPokemon, opponentPokemon } = this.props;
@@ -64,8 +74,6 @@ class BattleGroundContainer extends React.Component<IProps> {
       });
     }
   }
-
-
 
   handleAttack() {
     const turn: Role = this.state.turnOrder[this.props.turn];
@@ -80,9 +88,20 @@ class BattleGroundContainer extends React.Component<IProps> {
           : this.props.opponentPokemon,
       move:
         turn === "opponent"
-          ? this.props.opponentPokemon.moves[0]
-          : this.props.playerPokemon.moves[0],
+          ? this.props.opponentPokemon.moves.filter(
+              move => move.name === this.props.opponentMove
+            )[0]
+          : this.props.playerPokemon.moves.filter(
+              move => move.name === this.props.playerMove
+            )[0],
       turn
+    });
+  }
+
+  onMoveButtonClick(e) {
+    this.props.selectMove({
+      moveName: e.target.name,
+      from: e.target.className
     });
   }
 
@@ -98,21 +117,37 @@ class BattleGroundContainer extends React.Component<IProps> {
   }
 
   onAttackButtonClick() {
-    this.setState({ move: true });
+    if (this.props.playerMove && this.props.opponentMove)
+      this.setState({ move: true });
   }
 
   render() {
-    return <BattleGround attack={this.onAttackButtonClick.bind(this)} />;
+    return (
+      <BattleGround
+        attack={this.onAttackButtonClick.bind(this)}
+        selectMove={this.onMoveButtonClick.bind(this)}
+        opponentPokemon={this.props.opponentPokemon}
+        playerPokemon={this.props.playerPokemon}
+      />
+    );
   }
 }
 
-const mapStateToProps = ({ playerPokemon, opponentPokemon, turn }) => ({
+const mapStateToProps = ({
   playerPokemon,
   opponentPokemon,
-  turn
+  turn,
+  playerMove,
+  opponentMove
+}) => ({
+  playerPokemon,
+  opponentPokemon,
+  turn,
+  playerMove,
+  opponentMove
 });
 
 export default connect(
   mapStateToProps,
-  { fetchPokemon, switchTurn, selectPokemon, newTurn, attack }
+  { fetchPokemon, switchTurn, selectPokemon, newTurn, attack, selectMove }
 )(BattleGroundContainer);

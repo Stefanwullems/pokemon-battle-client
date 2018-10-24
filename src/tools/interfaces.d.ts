@@ -92,6 +92,11 @@ export interface ISelectPokemonParams {
   from: Role;
 }
 
+export interface ISelectMoveParams {
+  moveName: string;
+  from: Role;
+}
+
 export interface IAction {
   type: string;
 }
