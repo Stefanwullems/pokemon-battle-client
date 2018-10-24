@@ -4,6 +4,7 @@ export interface IPokemon {
   types: IType[];
   moves: IMove[];
   stats: IStats;
+  status: "fit" | "fainted";
 }
 
 export type Type =
@@ -46,7 +47,7 @@ export interface IStats {
 export interface IAttack {
   attacker: IPokemon;
   defender: IPokemon;
-  move: IMove;
+  moveName: string;
   turn: Role;
 }
 
@@ -75,8 +76,8 @@ export interface IType {
 export interface ITurnOrderOptions {
   playerPokemon: IPokemon;
   opponentPokemon: IPokemon;
-  playerMove?: IMove;
-  opponentMove?: IMove;
+  playerMoveName: string;
+  opponentMoveName: string;
 }
 
 export type ITurnOrder = Role[];
