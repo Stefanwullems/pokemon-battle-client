@@ -1,38 +1,41 @@
 import * as React from "react";
 import BattleGround from "./BattleGround";
 import { connect } from "react-redux";
-import fetchPokemon from "../../actions/pokemon/get-pokemon";
+import fetchPokemon from "../../actions/pokemon/fetch-pokemon";
 import switchTurn from "../../actions/gameLogic/switch-turn";
 import selectPokemon from "../../actions/pokemon/select-pokemon";
 import newTurn from "../../actions/gameLogic/new-turn";
 import getTurnOrder from "../../scripts/turn-order";
 import attack from "../../actions/gameLogic/attack";
 import selectMove from "../../actions/gameLogic/select-move";
-import getTypes from "../../actions/types/get-types";
+import fetchTypes from "../../actions/types/fetch-types";
 import {
   IPokemon,
-  IAttack,
+  IAttackParams,
   Role,
-  IFetchParams,
+  IFetchPokemonParams,
   ISelectPokemonParams,
-  ISelectMoveParams
+  ISelectMoveParams,
+  ITypes
 } from "../../tools/interfaces";
+import randomItem from "../../scripts/random-item";
 
 interface IProps {
-  fetchPokemon: (fetchParams: IFetchParams) => void;
+  fetchPokemon: (fetchParams: IFetchPokemonParams) => void;
   switchTurn: () => void;
   selectPokemon: (selectPokemonParams: ISelectPokemonParams) => void;
   newTurn: () => void;
   selectMove: (selectMoveParams: ISelectMoveParams) => void;
-  attack: (attack: IAttack) => void;
-  getTypes: () => void;
+  attack: (attack: IAttackParams) => void;
+  fetchTypes: () => void;
   playerPokemon: IPokemon;
   opponentPokemon: IPokemon;
-  turn: number;
+  turnIndex: number;
   playerMove: string;
   opponentMove: string;
   opponentParty: IPokemon[];
   playerParty: IPokemon[];
+  types: ITypes;
 }
 
 class BattleGroundContainer extends React.Component<IProps> {
@@ -43,11 +46,11 @@ class BattleGroundContainer extends React.Component<IProps> {
   };
 
   async componentDidMount() {
-    const { fetchPokemon, selectPokemon, getTypes } = this.props;
-    await getTypes();
+    const { fetchPokemon, selectPokemon, fetchTypes } = this.props;
+    await fetchTypes();
     await fetchPokemon({ playerPartyIds: [2, 5], opponentPartyIds: [5, 8] });
-    selectPokemon({ id: 5, from: "opponent" });
-    selectPokemon({ id: 2, from: "player" });
+    selectPokemon({ id: 5, trainer: "opponent" });
+    selectPokemon({ id: 2, trainer: "player" });
   }
 
   componentDidUpdate() {
@@ -66,72 +69,72 @@ class BattleGroundContainer extends React.Component<IProps> {
     }
   }
 
-  setTurnOrder() {
-    const {
-      playerPokemon,
-      opponentPokemon,
-      playerMove,
-      opponentMove
-    } = this.props;
-    this.setState({
-      turnOrder: getTurnOrder({
-        playerPokemon,
-        opponentPokemon,
-        playerMoveName: playerMove,
-        opponentMoveName: opponentMove
-      })
-    });
-  }
-
   handleAttack() {
-    const turn: Role = this.state.turnOrder[this.props.turn];
+    const attacker: Role = this.state.turnOrder[this.props.turnIndex];
+    const defender: Role = this.state.turnOrder[(this.props.turnIndex + 1) % 2];
     this.props.attack({
-      attacker:
-        turn === "opponent"
-          ? this.props.opponentPokemon
-          : this.props.playerPokemon,
-      defender:
-        turn === "opponent"
-          ? this.props.playerPokemon
-          : this.props.opponentPokemon,
-      moveName:
-        turn === "opponent" ? this.props.opponentMove : this.props.playerMove,
-      turn
+      attacker: this.props[`${attacker}Pokemon`],
+      defender: this.props[`${defender}Pokemon`],
+      moveName: this.props[`${attacker}Move`],
+      turn: attacker,
+      types: this.props.types
     });
   }
 
-  checkPokemon(from) {
-    if (from === "opponent") {
-      const nextPokemon = this.props.opponentParty.filter(
-        pokemon => pokemon.status === "fit"
-      )[0];
-      console.log(nextPokemon);
-      if (!nextPokemon) {
+  handleTurn() {
+    if (this.props.turnIndex === 0) {
+      this.props.switchTurn();
+    } else {
+      this.props.newTurn();
+      this.setState({
+        showMoves: false
+      });
+      this.setTurnOrder();
+    }
+  }
+
+  setTurnOrder() {
+    const newTurnOrder = getTurnOrder({
+      playerPokemon: this.props.playerPokemon,
+      opponentPokemon: this.props.opponentPokemon,
+      playerMoveName: this.props.playerMove,
+      opponentMoveName: this.props.opponentMove
+    });
+    if (newTurnOrder) {
+      this.setState({
+        turnOrder: newTurnOrder
+      });
+    }
+  }
+
+  checkPokemon(trainer) {
+    const fitPokemon = this.props[`${trainer}Party`].filter(
+      pokemon => pokemon.status === "fit"
+    );
+    if (trainer === "opponent") {
+      if (!fitPokemon.length) {
         window.prompt("you won");
       } else {
         this.props.selectPokemon({
-          id: nextPokemon.id,
-          from
+          id: randomItem(fitPokemon).id,
+          trainer
         });
       }
     } else {
-      const availablePokemon = this.props.playerParty.filter(
-        pokemon => pokemon.stats.hp > 0
-      );
-      if (!availablePokemon) {
+      if (!fitPokemon.length) {
         window.prompt("you lost");
       } else {
         while (true) {
           const nextPokemonName = window.prompt(
-            `your pokemon fainted. select another pokemon. Available:${availablePokemon.map(
+            `your pokemon fainted. select another pokemon. Available:${fitPokemon.map(
               pokemon => pokemon.name
             )} `
           );
-          const nextPokemon = availablePokemon.filter(
+          const nextPokemon = fitPokemon.filter(
             pokemon => pokemon.name === nextPokemonName
           )[0];
           if (nextPokemon.id) {
-            this.props.selectPokemon({ id: nextPokemon.id, from });
+            this.props.selectPokemon({ id: nextPokemon.id, trainer });
             break;
           }
         }
@@ -142,28 +145,12 @@ class BattleGroundContainer extends React.Component<IProps> {
   onMoveButtonClick(e) {
     this.props.selectMove({
       moveName: e.target.name,
-      from: "player"
+      trainer: "player"
     });
     this.props.selectMove({
-      moveName: this.props.opponentPokemon.moves[
-        Math.floor(Math.random() * this.props.opponentPokemon.moves.length)
-      ].name,
-      from: "opponent"
+      moveName: randomItem(this.props.opponentPokemon.moves).name,
+      trainer: "opponent"
     });
-  }
-
-  handleTurn() {
-    if (this.props.turn === 0) {
-      this.props.switchTurn();
-    } else {
-      this.props.newTurn();
-      this.setState({
-        showMoves: false
-      });
-      this.setState({
-        turnOrder: []
-      });
-    }
   }
 
   onAttackButtonClick() {
@@ -175,13 +162,11 @@ class BattleGroundContainer extends React.Component<IProps> {
   }
 
   onSelectButtonClick(e) {
-    this.props.selectPokemon({ id: Number(e.target.name), from: "player" });
-    this.props.selectMove({ moveName: "pass", from: "player" });
+    this.props.selectPokemon({ id: Number(e.target.name), trainer: "player" });
+    this.props.selectMove({ moveName: "pass", trainer: "player" });
     this.props.selectMove({
-      moveName: this.props.opponentPokemon.moves[
-        Math.floor(Math.random() * this.props.opponentPokemon.moves.length)
-      ].name,
-      from: "opponent"
+      moveName: randomItem(this.props.opponentPokemon.moves).name,
+      trainer: "opponent"
     });
   }
 
@@ -206,19 +191,21 @@ class BattleGroundContainer extends React.Component<IProps> {
 const mapStateToProps = ({
   playerPokemon,
   opponentPokemon,
-  turn,
+  turnIndex,
   playerMove,
   opponentMove,
   opponentParty,
-  playerParty
+  playerParty,
+  types
 }) => ({
   playerPokemon,
   opponentPokemon,
-  turn,
+  turnIndex,
   playerMove,
   opponentMove,
   opponentParty,
-  playerParty
+  playerParty,
+  types
 });
 
 export default connect(
@@ -230,6 +217,6 @@ export default connect(
     newTurn,
     attack,
     selectMove,
-    getTypes
+    fetchTypes
   }
 )(BattleGroundContainer);

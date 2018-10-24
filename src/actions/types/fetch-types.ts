@@ -8,19 +8,16 @@ export const FETCHED_TYPES = "FETCHED_TYPES";
 
 export default function() {
   return async function(dispatch) {
-    const types = await getTypes();
     dispatch({
       type: FETCHED_TYPES,
-      payload: types
+      payload: await getTypes()
     });
   };
 }
 
 async function getTypes() {
   const res = await queryForTypes();
-  const types = res.data["types"];
-
-  return types.reduce((acc, curr) => {
+  return res.data["types"].reduce((acc, curr) => {
     const { name, ...multipliers } = curr;
     acc[name] = multipliers;
     return acc;

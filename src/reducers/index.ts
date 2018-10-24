@@ -3,20 +3,22 @@ import playerPokemon from "./playerPokemon";
 import opponentPokemon from "./opponentPokemon";
 import playerParty from "./playerParty";
 import opponentParty from "./opponentParty";
-import turn from "./turn";
+import turnIndex from "./turnIndex";
 import trainer from "./trainer";
 import games from "./games";
 import playerMove from "./playerMove";
 import opponentMove from "./opponentMove";
+import types from "./types";
 
 export default combineReducers({
   playerParty,
   opponentParty,
-  turn,
+  turnIndex,
   playerPokemon,
   opponentPokemon,
   games,
   trainer,
   playerMove,
-  opponentMove
+  opponentMove,
+  types
 });
