@@ -1,9 +1,11 @@
 export interface IPokemon {
   id: number;
   name: string;
-  types: IType[];
+  primaryType: Type;
+  secondaryType: Type;
   moves: IMove[];
   stats: IStats;
+  sprites: ISprites;
   status: "fit" | "fainted";
 }
 
@@ -44,15 +46,12 @@ export interface IStats {
   speed: number;
 }
 
-export interface IAttack {
-  attacker: IPokemon;
-  defender: IPokemon;
-  moveName: string;
-  turn: Role;
+export interface ISprites {
+  front_sprite_url: string;
+  back_sprite_url: string;
 }
 
 export interface IType {
-  name: string;
   normal_multiplier: number;
   fire_multiplier: number;
   water_multiplier: number;
@@ -73,7 +72,38 @@ export interface IType {
   fairy_multiplier: number;
 }
 
-export interface ITurnOrderOptions {
+export interface ITypes {
+  normal: IType;
+  fire: IType;
+  water: IType;
+  electric: IType;
+  grass: IType;
+  ice: IType;
+  fighting: IType;
+  poison: IType;
+  ground: IType;
+  flying: IType;
+  psychic: IType;
+  bug: IType;
+  rock: IType;
+  ghost: IType;
+  dragon: IType;
+  dark: IType;
+  steel: IType;
+  fairy: IType;
+}
+
+export type Role = "player" | "opponent";
+
+export interface IAttackParams {
+  attacker: IPokemon;
+  defender: IPokemon;
+  moveName: string;
+  turn: Role;
+  types: ITypes;
+}
+
+export interface ITurnOrderParams {
   playerPokemon: IPokemon;
   opponentPokemon: IPokemon;
   playerMoveName: string;
@@ -81,21 +111,20 @@ export interface ITurnOrderOptions {
 }
 
 export type ITurnOrder = Role[];
-export type Role = "player" | "opponent";
 
-export interface IFetchParams {
+export interface IFetchPokemonParams {
   playerPartyIds: number[];
   opponentPartyIds: number[];
 }
 
 export interface ISelectPokemonParams {
   id: number;
-  from: Role;
+  trainer: Role;
 }
 
 export interface ISelectMoveParams {
   moveName: string;
-  from: Role;
+  trainer: Role;
 }
 
 export interface IAction {

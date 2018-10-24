@@ -1,4 +1,4 @@
-import { IFetchParams, IPokemon } from "../../tools/interfaces";
+import { IFetchPokemonParams, IPokemon } from "../../tools/interfaces";
 import ApolloClient, { gql } from "apollo-boost";
 
 const client = new ApolloClient({
@@ -8,23 +8,28 @@ const client = new ApolloClient({
 export const SET_PLAYER_PARTY = "SET_PLAYER_PARTY";
 export const SET_OPPONENT_PARTY = "SET_OPPONENT_PARTY";
 
-export default function({ playerPartyIds, opponentPartyIds }: IFetchParams) {
+export default function({
+  playerPartyIds,
+  opponentPartyIds
+}: IFetchPokemonParams) {
   return async function(dispatch) {
-    const playerParty = await mapPokemonToId(playerPartyIds);
-
-    dispatch({
-      type: SET_PLAYER_PARTY,
-      payload: playerParty
-    });
-    const opponentParty = await mapPokemonToId(opponentPartyIds);
-    dispatch({
-      type: SET_OPPONENT_PARTY,
-      payload: opponentParty
-    });
+    dispatch(
+      await dispatchParty({ partyIds: playerPartyIds, trainer: "PLAYER" })
+    );
+    dispatch(
+      await dispatchParty({ partyIds: opponentPartyIds, trainer: "OPPONENT" })
+    );
   };
 }
 
-async function mapPokemonToId(partyIds: number[]): Promise<IPokemon[]> {
+async function dispatchParty({ partyIds, trainer }) {
+  return {
+    type: `SET_${trainer}_PARTY`,
+    payload: await constructParty(partyIds)
+  };
+}
+
+async function constructParty(partyIds) {
   const party: IPokemon[] = [];
   for (let i = 0; i < partyIds.length; i++) {
     await queryForPokemon(partyIds[i]).then((res: any) => {
