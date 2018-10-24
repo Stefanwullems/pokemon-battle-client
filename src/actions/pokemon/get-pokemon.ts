@@ -43,27 +43,8 @@ function queryForPokemon(id) {
           pokemon(id: ${id}) {
             name
             id
-            types{
-              name
-              normal_multiplier
-              fire_multiplier
-              water_multiplier
-              electric_multiplier
-              grass_multiplier
-              ice_multiplier
-              fighting_multiplier
-              poison_multiplier
-              ground_multiplier
-              flying_multiplier
-              psychic_multiplier
-              bug_multiplier
-              rock_multiplier
-              ghost_multiplier
-              dragon_multiplier
-              dark_multiplier
-              steel_multiplier
-              fairy_multiplier
-            }
+            primaryType
+            secondaryType
             stats{
               hp
               attack
