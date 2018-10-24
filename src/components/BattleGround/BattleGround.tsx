@@ -7,12 +7,18 @@ import { IPokemon } from "../../tools/interfaces";
 // import { BattleInfoContainer } from './BattleInfoContainer'
 
 interface IProps {
-  attack: () => void;
+  toggleShowMoves: () => void;
+  toggleShowSwitchOut: () => void;
+  onSelectButtonClick: () => void;
   selectMove: () =>
     | ((event: React.MouseEvent<HTMLButtonElement>) => void)
     | undefined;
   playerPokemon: IPokemon;
   opponentPokemon: IPokemon;
+  playerParty: IPokemon[];
+  opponentParty: IPokemon[];
+  showSwitchOut: boolean;
+  showMoves: boolean;
 }
 
 function BattleGround(props: IProps) {
@@ -31,34 +37,66 @@ function BattleGround(props: IProps) {
       </div> */}
       {/* Closing BottomDiv*/}
       <h1>Test</h1>
-      <button onClick={props.attack}>attack</button>
-      <h2>Player moves</h2>
+      <h2>Opponent</h2>
+      <span>
+        {Object.keys(props.opponentPokemon).length && (
+          <span>
+            {props.opponentPokemon.name} - {props.opponentPokemon.stats.hp}
+          </span>
+        )}
+      </span>
+      <h2>Player</h2>
       <div>
-        {Object.keys(props.playerPokemon).length &&
-          props.playerPokemon.moves.map(move => {
+        {Object.keys(props.playerPokemon).length && (
+          <span>
+            {props.playerPokemon.name} - {props.playerPokemon.stats.hp}
+          </span>
+        )}
+        <button onClick={props.toggleShowMoves}>attack</button>
+        {props.showMoves && (
+          <div>
+            <div>
+              {Object.keys(props.playerPokemon).length &&
+                props.playerPokemon.moves.map(move => {
+                  return (
+                    <button
+                      onClick={props.selectMove}
+                      name={move.name}
+                      className="player"
+                      key={move.name}
+                    >
+                      {move.name}
+                    </button>
+                  );
+                })}
+            </div>
+          </div>
+        )}
+        <button onClick={props.toggleShowSwitchOut}>Switch Out</button>
+        <br />
+        <br />
+        {Object.keys(props.playerParty).length &&
+          props.showSwitchOut &&
+          props.playerParty.map(pokemon => {
             return (
-              <button
-                onClick={props.selectMove}
-                name={move.name}
-                className="player"
-              >
-                {move.name}
-              </button>
-            );
-          })}
-      </div>
-      <h2>Opponent moves</h2>
-      <div>
-        {Object.keys(props.opponentPokemon).length &&
-          props.opponentPokemon.moves.map(move => {
-            return (
-              <button
-                onClick={props.selectMove}
-                name={move.name}
-                className="opponent"
-              >
-                {move.name}
-              </button>
+              <div key={pokemon.name}>
+                <span>
+                  {pokemon.name} : {pokemon.stats.hp}
+                </span>
+                {pokemon.name !== props.playerPokemon.name && (
+                  <button
+                    onClick={props.onSelectButtonClick}
+                    name={pokemon.id.toString()}
+                  >
+                    select
+                  </button>
+                )}
+                {pokemon.name === props.playerPokemon.name && (
+                  <strong>selected</strong>
+                )}
+                <br />
+                <br />
+              </div>
             );
           })}
       </div>

@@ -29,12 +29,15 @@ interface IProps {
   turn: number;
   playerMove: string;
   opponentMove: string;
+  opponentParty: IPokemon[];
+  playerParty: IPokemon[];
 }
 
 class BattleGroundContainer extends React.Component<IProps> {
   state = {
-    move: false,
-    turnOrder: []
+    showMoves: false,
+    turnOrder: [],
+    showSwitchOut: false
   };
 
   async componentDidMount() {
@@ -46,33 +49,36 @@ class BattleGroundContainer extends React.Component<IProps> {
   }
 
   componentDidUpdate() {
-    if (this.state.move) {
-      console.log(this.props.playerMove, this.props.opponentMove);
-      if (this.props.playerMove && this.props.opponentMove) {
-        console.log(2);
-        if (!this.state.turnOrder.length) {
-          console.log(3);
-          this.setTurnOrder();
-        }
-        if (this.state.turnOrder.length) {
-          console.log(4);
-          this.handleAttack();
-          this.handleTurn();
-        }
+    if (this.props.opponentPokemon.status === "fainted") {
+      this.checkPokemon("opponent");
+    }
+    if (this.props.playerPokemon.status === "fainted") {
+      this.checkPokemon("player");
+    }
+    if (this.props.playerMove && this.props.opponentMove) {
+      if (!this.state.turnOrder.length) this.setTurnOrder();
+      else {
+        this.handleAttack();
+        this.handleTurn();
       }
     }
   }
 
   setTurnOrder() {
-    const { playerPokemon, opponentPokemon } = this.props;
-    if (
-      Object.keys(playerPokemon).length &&
-      Object.keys(opponentPokemon).length
-    ) {
-      this.setState({
-        turnOrder: getTurnOrder({ playerPokemon, opponentPokemon })
-      });
-    }
+    const {
+      playerPokemon,
+      opponentPokemon,
+      playerMove,
+      opponentMove
+    } = this.props;
+    this.setState({
+      turnOrder: getTurnOrder({
+        playerPokemon,
+        opponentPokemon,
+        playerMoveName: playerMove,
+        opponentMoveName: opponentMove
+      })
+    });
   }
 
   handleAttack() {
@@ -86,22 +92,61 @@ class BattleGroundContainer extends React.Component<IProps> {
         turn === "opponent"
           ? this.props.playerPokemon
           : this.props.opponentPokemon,
-      move:
-        turn === "opponent"
-          ? this.props.opponentPokemon.moves.filter(
-              move => move.name === this.props.opponentMove
-            )[0]
-          : this.props.playerPokemon.moves.filter(
-              move => move.name === this.props.playerMove
-            )[0],
+      moveName:
+        turn === "opponent" ? this.props.opponentMove : this.props.playerMove,
       turn
     });
+  }
+
+  checkPokemon(from) {
+    if (from === "opponent") {
+      const nextPokemon = this.props.opponentParty.filter(
+        pokemon => pokemon.status === "fit"
+      )[0];
+      console.log(nextPokemon);
+      if (!nextPokemon) {
+        window.prompt("you won");
+      } else {
+        this.props.selectPokemon({
+          id: nextPokemon.id,
+          from
+        });
+      }
+    } else {
+      const availablePokemon = this.props.playerParty.filter(
+        pokemon => pokemon.stats.hp > 0
+      );
+      if (!availablePokemon) {
+        window.prompt("you lost");
+      } else {
+        while (true) {
+          const nextPokemonName = window.prompt(
+            `your pokemon fainted. select another pokemon. Available:${availablePokemon.map(
+              pokemon => pokemon.name
+            )} `
+          );
+          const nextPokemon = availablePokemon.filter(
+            pokemon => pokemon.name === nextPokemonName
+          )[0];
+          if (nextPokemon.id) {
+            this.props.selectPokemon({ id: nextPokemon.id, from });
+            break;
+          }
+        }
+      }
+    }
   }
 
   onMoveButtonClick(e) {
     this.props.selectMove({
       moveName: e.target.name,
-      from: e.target.className
+      from: "player"
+    });
+    this.props.selectMove({
+      moveName: this.props.opponentPokemon.moves[
+        Math.floor(Math.random() * this.props.opponentPokemon.moves.length)
+      ].name,
+      from: "opponent"
     });
   }
 
@@ -111,23 +156,46 @@ class BattleGroundContainer extends React.Component<IProps> {
     } else {
       this.props.newTurn();
       this.setState({
-        move: false
+        showMoves: false
+      });
+      this.setState({
+        turnOrder: []
       });
     }
   }
 
   onAttackButtonClick() {
-    if (this.props.playerMove && this.props.opponentMove)
-      this.setState({ move: true });
+    this.setState({ showMoves: !this.state.showMoves });
+  }
+
+  onSwitchOutButtonClick() {
+    this.setState({ showSwitchOut: !this.state.showSwitchOut });
+  }
+
+  onSelectButtonClick(e) {
+    this.props.selectPokemon({ id: Number(e.target.name), from: "player" });
+    this.props.selectMove({ moveName: "pass", from: "player" });
+    this.props.selectMove({
+      moveName: this.props.opponentPokemon.moves[
+        Math.floor(Math.random() * this.props.opponentPokemon.moves.length)
+      ].name,
+      from: "opponent"
+    });
   }
 
   render() {
     return (
       <BattleGround
-        attack={this.onAttackButtonClick.bind(this)}
+        onSelectButtonClick={this.onSelectButtonClick.bind(this)}
+        toggleShowMoves={this.onAttackButtonClick.bind(this)}
+        toggleShowSwitchOut={this.onSwitchOutButtonClick.bind(this)}
+        showMoves={this.state.showMoves}
         selectMove={this.onMoveButtonClick.bind(this)}
         opponentPokemon={this.props.opponentPokemon}
         playerPokemon={this.props.playerPokemon}
+        opponentParty={this.props.opponentParty}
+        playerParty={this.props.playerParty}
+        showSwitchOut={this.state.showSwitchOut}
       />
     );
   }
@@ -138,13 +206,17 @@ const mapStateToProps = ({
   opponentPokemon,
   turn,
   playerMove,
-  opponentMove
+  opponentMove,
+  opponentParty,
+  playerParty
 }) => ({
   playerPokemon,
   opponentPokemon,
   turn,
   playerMove,
-  opponentMove
+  opponentMove,
+  opponentParty,
+  playerParty
 });
 
 export default connect(

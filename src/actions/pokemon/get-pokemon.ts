@@ -27,9 +27,11 @@ export default function({ playerPartyIds, opponentPartyIds }: IFetchParams) {
 async function mapPokemonToId(partyIds: number[]): Promise<IPokemon[]> {
   const party: IPokemon[] = [];
   for (let i = 0; i < partyIds.length; i++) {
-    await queryForPokemon(partyIds[i]).then((res: any) =>
-      party.push(res.data.pokemon as IPokemon)
-    );
+    await queryForPokemon(partyIds[i]).then((res: any) => {
+      const pokemon: IPokemon = res.data.pokemon;
+      pokemon.status = "fit";
+      party.push(pokemon);
+    });
   }
   return party;
 }
