@@ -8,6 +8,7 @@ import newTurn from "../../actions/gameLogic/new-turn";
 import getTurnOrder from "../../scripts/turn-order";
 import attack from "../../actions/gameLogic/attack";
 import selectMove from "../../actions/gameLogic/select-move";
+import getTypes from "../../actions/types/get-types";
 import {
   IPokemon,
   IAttack,
@@ -24,6 +25,7 @@ interface IProps {
   newTurn: () => void;
   selectMove: (selectMoveParams: ISelectMoveParams) => void;
   attack: (attack: IAttack) => void;
+  getTypes: () => void;
   playerPokemon: IPokemon;
   opponentPokemon: IPokemon;
   turn: number;
@@ -41,8 +43,8 @@ class BattleGroundContainer extends React.Component<IProps> {
   };
 
   async componentDidMount() {
-    const { fetchPokemon, selectPokemon } = this.props;
-
+    const { fetchPokemon, selectPokemon, getTypes } = this.props;
+    await getTypes();
     await fetchPokemon({ playerPartyIds: [2, 5], opponentPartyIds: [5, 8] });
     selectPokemon({ id: 5, from: "opponent" });
     selectPokemon({ id: 2, from: "player" });
@@ -221,5 +223,13 @@ const mapStateToProps = ({
 
 export default connect(
   mapStateToProps,
-  { fetchPokemon, switchTurn, selectPokemon, newTurn, attack, selectMove }
+  {
+    fetchPokemon,
+    switchTurn,
+    selectPokemon,
+    newTurn,
+    attack,
+    selectMove,
+    getTypes
+  }
 )(BattleGroundContainer);
