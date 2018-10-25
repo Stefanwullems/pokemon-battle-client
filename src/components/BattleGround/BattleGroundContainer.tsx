@@ -44,7 +44,8 @@ class BattleGroundContainer extends React.Component<IProps> {
     turnOrder: [],
     showSwitchOut: false,
     prevTurnOrder: [],
-    aiOn: false
+    aiOn: true,
+    logging: false
   };
 
   async componentDidMount() {
@@ -56,17 +57,19 @@ class BattleGroundContainer extends React.Component<IProps> {
   }
 
   componentDidUpdate() {
-    if (this.props.opponentPokemon.status === "fainted") {
-      this.checkPokemon("opponent");
-    }
-    if (this.props.playerPokemon.status === "fainted") {
-      this.checkPokemon("player");
-    }
-    if (this.props.playerMove && this.props.opponentMove) {
-      if (!this.state.turnOrder.length) this.setTurnOrder();
-      else {
-        this.handleAttack();
-        this.handleTurn();
+    if (!this.state.logging) {
+      if (this.props.opponentPokemon.status === "fainted") {
+        this.checkPokemon("opponent");
+      }
+      if (this.props.playerPokemon.status === "fainted") {
+        this.checkPokemon("player");
+      }
+      if (this.props.playerMove && this.props.opponentMove) {
+        if (!this.state.turnOrder.length) this.setTurnOrder();
+        else {
+          this.handleAttack();
+          this.handleTurn();
+        }
       }
     }
   }
@@ -86,6 +89,7 @@ class BattleGroundContainer extends React.Component<IProps> {
   handleTurn() {
     if (this.props.turnIndex === 0) {
       this.props.switchTurn();
+      this.setState({ logging: true });
     } else {
       this.props.newTurn();
       this.setState({
@@ -94,6 +98,7 @@ class BattleGroundContainer extends React.Component<IProps> {
       this.setState({
         turnOrder: []
       });
+      this.setState({ logging: true });
     }
   }
 
@@ -187,9 +192,15 @@ class BattleGroundContainer extends React.Component<IProps> {
     }
   }
 
+  onNextButtonClick() {
+    this.setState({ logging: false });
+  }
+
   render() {
     return (
       <BattleGround
+        logging={this.state.logging}
+        onNextButtonClick={this.onNextButtonClick.bind(this)}
         onSelectButtonClick={this.onSelectButtonClick.bind(this)}
         toggleShowMoves={this.onAttackButtonClick.bind(this)}
         toggleShowSwitchOut={this.onSwitchOutButtonClick.bind(this)}

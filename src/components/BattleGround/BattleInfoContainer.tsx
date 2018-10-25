@@ -1,14 +1,22 @@
-// import * as React from 'react'
+import * as React from "react";
+import { connect } from "react-redux";
 
+interface IProps {
+  log: string;
+  onNextButtonClick: () => void;
+}
 
-// export class BattleInfoContainer extends React.Component {
-//     render() {
-//       return (
-//      <div className="BattleInfo">
-//      <h2>
-//          {(currentTrainer.currentPokemon.name).toUpperCase()} used {(currentTrainer.selectedSkill.name).toUpperCase()}.
-//      </h2>
-//      </div>
-//       );
-//     }
-//   }
+class BattleInfoContainer extends React.Component<IProps> {
+  render() {
+    return (
+      <div className="BattleInfo">
+        {this.props.log}
+        <button onClick={this.props.onNextButtonClick}>next</button>
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = ({ log }) => ({ log });
+
+export default connect(mapStateToProps)(BattleInfoContainer);
