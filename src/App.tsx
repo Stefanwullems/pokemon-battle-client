@@ -5,9 +5,9 @@ import GreetingScreen  from './components/PathComponents/GreetingScreen'
 import WaitingRoom from './components/PathComponents/WaitingRoom'
 import Selection from './components/PathComponents/Selection'
 
-import  "./App.css"
 
-// import BattleGroundContainer from "./components/BattleGround/BattleGroundContainer";
+
+import "./App.css";
 
 class App extends React.Component {
   public render() {

@@ -90,7 +90,75 @@ html, body
 	color:white;
 }
 
-.PokeTable{
+.AwaitingLobby{
 	display: flex;
 	justify-content: center;
 }
+
+.pokeDivs{ 
+position: relative;
+top: 20vh;
+	display: flex;
+	justify-content: center;
+	width: 10vw;
+	height: 20vh;
+	background-color: #F6F6F6;
+	border-radius: 15px;
+	border: 1px solid;
+    padding: 10px;
+	box-shadow: 5px 10px 8px #888888;
+	margin-left: 10px;
+}
+
+.listImage{
+	position: absolute;
+	justify-content: center;
+	width: 8vw;
+	top:2vh;
+	height: 10vh;
+}
+
+
+
+.pokeDivText{
+	position: absolute;
+	top:13vh;
+	font-size: 28px;
+	font-family: 'Chakra Petch', sans-serif;
+}
+
+
+.pokeDivs:hover{ 
+		width: 12vw;
+		height: 22vh;
+		background-color: rgb(211, 211, 211);
+		border-radius: 15px;
+		border: 1px solid;
+		padding: 0px;
+		margin-left: 10px;
+		font-size: 30px;
+	}
+
+	.pokeDivs:active{
+		background-color: rgba(0, 177, 0, 0.589);
+		color:white;
+	}
+
+
+	.PageTitleHeader{
+		position: relative;
+		display: flex;
+		justify-content: center;
+		font-family: 'Chakra Petch', sans-serif;
+		top: 10vh;
+	}
+
+	.SelectedTitle{
+		display: flex;
+		justify-content: center;
+		position: relative;
+		top: 30vh;
+		font-family: 'Chakra Petch', sans-serif;
+		
+	
+	}

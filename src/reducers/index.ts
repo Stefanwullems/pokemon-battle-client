@@ -1,11 +1,24 @@
 import { combineReducers } from "redux";
-import pokemon1 from "./pokemon1";
-import pokemon2 from "./pokemon2";
-import turn from "./turn";
+import playerPokemon from "./playerPokemon";
+import opponentPokemon from "./opponentPokemon";
+import playerParty from "./playerParty";
+import opponentParty from "./opponentParty";
+import turnIndex from "./turnIndex";
+import trainer from "./trainer";
+import games from "./games";
+import playerMove from "./playerMove";
+import opponentMove from "./opponentMove";
+import types from "./types";
 
-import games from './games'
-
-export default combineReducers({ pokemon1,
-     pokemon2, 
-     turn, 
-     games });
+export default combineReducers({
+  playerParty,
+  opponentParty,
+  turnIndex,
+  playerPokemon,
+  opponentPokemon,
+  games,
+  trainer,
+  playerMove,
+  opponentMove,
+  types
+});

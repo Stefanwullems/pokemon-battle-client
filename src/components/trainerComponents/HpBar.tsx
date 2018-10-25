@@ -1,17 +1,37 @@
-import * as React from 'react';
+import * as React from "react";
+import { withStyles } from "@material-ui/core";
+interface IProps {
+  hp: number;
+  classes: any;
+  maxHp: number;
+}
 
-export function EnemyHpBar(props) {
+const styles = {
+  hpBar: {
+    backgroundColor: "green",
+    height: "2vh",
+    margin: 0
+  }
+};
+
+function HpBar(props: IProps) {
   return (
-    <div className="HpBarSkeleton">
-      <div className="CurrentHealthBar" />
+    <div className={props.classes.hpBarContainer}>
+      {props.hp && (
+        <div>
+          <span>
+            hp: {props.hp}/{props.maxHp}
+            <div
+              className={props.classes.hpBar}
+              style={{
+                width: `${8 * (1 / props.maxHp) * props.hp}vw`
+              }}
+            />
+          </span>
+        </div>
+      )}
     </div>
   );
 }
 
-export function YourHpBar(props) {
-  return (
-    <div className="HpBarSkeleton">
-      <div className="CurrentHealthBar" />
-    </div>
-  );
-}
+export default withStyles(styles)(HpBar);
