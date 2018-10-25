@@ -1,13 +1,49 @@
-import {LOGIN, LOGOUT} from '../actions/trainers/login';
+import { PLAYER_LOGIN, PLAYER_LOGOUT } from "../actions/trainers/login"
 
-export default function (state = null, {type, payload}) {
+
+const init = {
+  red: null,
+  blue: null,
+  player: null
+}
+
+export default function (state = init, {type, payload}) {
   switch (type) {
-    case LOGIN:
-      console.log('in trainer action:', payload);
-      return payload;
+    case 'RED_LOGIN':
+      return {
+        ...state,
+        red: payload
+      }
 
-    case LOGOUT:
-      return null;
+    case 'BLUE_LOGIN':
+      return {
+        ...state,
+        blue: payload
+      }
+
+    case 'RED_LOGOUT':
+      return {
+        ...state,
+        red: null
+      }
+
+    case 'BLUE_LOGOUT':
+      return {
+        ...state,
+        blue: null
+      }
+
+    case PLAYER_LOGIN:
+      return {
+        ...state,
+        player: payload
+      }
+
+    case PLAYER_LOGOUT:
+      return {
+        ...state,
+        player: null
+      }
 
     default:
       return state
