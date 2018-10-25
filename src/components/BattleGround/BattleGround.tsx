@@ -1,5 +1,6 @@
 import * as React from "react";
 import { IPokemon } from "../../tools/interfaces";
+import doesExist from "../../scripts/does-exist";
 // import EnemyContainer from './EnemyContainer';
 // import { YourContainer } from './YourContainer';
 // import { MenuContainer } from './MenuContainer';
@@ -39,24 +40,24 @@ function BattleGround(props: IProps) {
       <h1>Test</h1>
       <h2>Opponent</h2>
       <span>
-        {Object.keys(props.opponentPokemon).length && (
+        {doesExist(props.opponentPokemon) && (
           <span>
-            {props.opponentPokemon.name} - {props.opponentPokemon.stats.hp}
+            {props.opponentPokemon.name} [hp: {props.opponentPokemon.stats.hp}]
           </span>
         )}
       </span>
       <h2>Player</h2>
       <div>
-        {Object.keys(props.playerPokemon).length && (
+        {doesExist(props.playerPokemon) && (
           <span>
-            {props.playerPokemon.name} - {props.playerPokemon.stats.hp}
+            {props.playerPokemon.name} [hp: {props.playerPokemon.stats.hp}]
           </span>
         )}
         <button onClick={props.toggleShowMoves}>attack</button>
         {props.showMoves && (
           <div>
             <div>
-              {Object.keys(props.playerPokemon).length &&
+              {doesExist(props.playerPokemon) &&
                 props.playerPokemon.moves.map(move => {
                   return (
                     <button
@@ -75,13 +76,13 @@ function BattleGround(props: IProps) {
         <button onClick={props.toggleShowSwitchOut}>Switch Out</button>
         <br />
         <br />
-        {Object.keys(props.playerParty).length &&
+        {doesExist(props.playerParty) &&
           props.showSwitchOut &&
           props.playerParty.map(pokemon => {
             return (
               <div key={pokemon.name}>
                 <span>
-                  {pokemon.name} : {pokemon.stats.hp}
+                  {pokemon.name} [hp: {pokemon.stats.hp}]
                 </span>
                 {pokemon.name !== props.playerPokemon.name && (
                   <button

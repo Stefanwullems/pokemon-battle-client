@@ -1,4 +1,4 @@
-import { SET_OPPONENT_PARTY } from "../actions/pokemon/get-pokemon";
+import { SET_OPPONENT_PARTY } from "../actions/pokemon/fetch-pokemon";
 import {
   OPPONENT_GOT_ATTACKED,
   OPPONENT_POKEMON_FAINTED
@@ -13,20 +13,18 @@ export default function(
     case SET_OPPONENT_PARTY:
       return JSON.parse(JSON.stringify(payload));
     case OPPONENT_GOT_ATTACKED:
-      return state.map(pokemon => {
-        if (pokemon.id === payload!.id) {
-          return payload;
-        }
-        return pokemon;
-      });
     case OPPONENT_POKEMON_FAINTED:
-      return state.map(pokemon => {
-        if (pokemon.id === payload!.id) {
-          return payload;
-        }
-        return pokemon;
-      });
+      return updateParty(state, payload);
     default:
       return state;
   }
+}
+
+function updateParty(state, payload) {
+  return state.map(pokemon => {
+    if (pokemon.id === payload!.id) {
+      return payload;
+    }
+    return pokemon;
+  });
 }
