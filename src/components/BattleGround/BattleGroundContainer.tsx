@@ -43,7 +43,8 @@ class BattleGroundContainer extends React.Component<IProps> {
     showMoves: false,
     turnOrder: [],
     showSwitchOut: false,
-    prevTurnOrder: []
+    prevTurnOrder: [],
+    aiOn: false
   };
 
   async componentDidMount() {
@@ -125,10 +126,12 @@ class BattleGroundContainer extends React.Component<IProps> {
       if (!fitPokemon.length) {
         window.prompt("you won");
       } else {
-        this.props.selectPokemon({
-          id: randomItem(fitPokemon).id,
-          trainer
-        });
+        if (this.state.aiOn) {
+          this.props.selectPokemon({
+            id: randomItem(fitPokemon).id,
+            trainer
+          });
+        }
       }
     } else {
       if (!fitPokemon.length) {
@@ -157,10 +160,12 @@ class BattleGroundContainer extends React.Component<IProps> {
       moveName: e.target.name,
       trainer: "player"
     });
-    this.props.selectMove({
-      moveName: randomItem(this.props.opponentPokemon.moves).name,
-      trainer: "opponent"
-    });
+    if (this.state.aiOn) {
+      this.props.selectMove({
+        moveName: randomItem(this.props.opponentPokemon.moves).name,
+        trainer: "opponent"
+      });
+    }
   }
 
   onAttackButtonClick() {
@@ -174,10 +179,12 @@ class BattleGroundContainer extends React.Component<IProps> {
   onSelectButtonClick(e) {
     this.props.selectPokemon({ id: Number(e.target.name), trainer: "player" });
     this.props.selectMove({ moveName: "pass", trainer: "player" });
-    this.props.selectMove({
-      moveName: randomItem(this.props.opponentPokemon.moves).name,
-      trainer: "opponent"
-    });
+    if (this.state.aiOn) {
+      this.props.selectMove({
+        moveName: randomItem(this.props.opponentPokemon.moves).name,
+        trainer: "opponent"
+      });
+    }
   }
 
   render() {
