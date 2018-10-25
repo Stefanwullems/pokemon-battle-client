@@ -42,7 +42,8 @@ class BattleGroundContainer extends React.Component<IProps> {
   state = {
     showMoves: false,
     turnOrder: [],
-    showSwitchOut: false
+    showSwitchOut: false,
+    prevTurnOrder: []
   };
 
   async componentDidMount() {
@@ -89,7 +90,9 @@ class BattleGroundContainer extends React.Component<IProps> {
       this.setState({
         showMoves: false
       });
-      this.setTurnOrder();
+      this.setState({
+        turnOrder: []
+      });
     }
   }
 
@@ -103,6 +106,13 @@ class BattleGroundContainer extends React.Component<IProps> {
     if (newTurnOrder) {
       this.setState({
         turnOrder: newTurnOrder
+      });
+      this.setState({
+        prevTurnOrder: newTurnOrder
+      });
+    } else {
+      this.setState({
+        turnOrder: this.state.prevTurnOrder
       });
     }
   }
@@ -178,7 +188,6 @@ class BattleGroundContainer extends React.Component<IProps> {
         toggleShowSwitchOut={this.onSwitchOutButtonClick.bind(this)}
         showMoves={this.state.showMoves}
         selectMove={this.onMoveButtonClick.bind(this)}
-        opponentPokemon={this.props.opponentPokemon}
         playerPokemon={this.props.playerPokemon}
         opponentParty={this.props.opponentParty}
         playerParty={this.props.playerParty}
