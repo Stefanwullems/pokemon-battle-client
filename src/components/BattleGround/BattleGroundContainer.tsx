@@ -49,56 +49,61 @@ class BattleGroundContainer extends React.Component<IProps> {
     turnOrder: [],
     showSwitchOut: false,
     prevTurnOrder: [],
-    aiOn: false
-  }
+    aiOn: false,
+    logging: false
+  };
 
   async componentDidMount() {
-    await this.props.fetchTypes()
-    await this.props.fetchPokemon({ playerPartyIds: [2, 5], opponentPartyIds: [5, 8] })
-    this.props.selectPokemon({ id: 5, trainer: "opponent" })
-    this.props.selectPokemon({ id: 2, trainer: "player" })
+    const { fetchPokemon, selectPokemon, fetchTypes } = this.props;
+    await fetchTypes();
+    await fetchPokemon({ playerPartyIds: [2, 5], opponentPartyIds: [5, 8] });
+    selectPokemon({ id: 5, trainer: "opponent" });
+    selectPokemon({ id: 2, trainer: "player" });
   }
 
   componentDidUpdate() {
-    if (this.props.opponentPokemon.status === "fainted") {
-      this.checkPokemon("opponent")
-    }
-    if (this.props.playerPokemon.status === "fainted") {
-      this.checkPokemon("player")
-    }
-    if (this.props.playerMove && this.props.opponentMove) {
-      if (!this.state.turnOrder.length) {
-        this.setTurnOrder()
-      } else {
-        this.handleAttack()
-        this.handleTurn()
+    if (!this.state.logging) {
+      if (this.props.opponentPokemon.status === "fainted") {
+        this.checkPokemon("opponent");
+      }
+      if (this.props.playerPokemon.status === "fainted") {
+        this.checkPokemon("player");
+      }
+      if (this.props.playerMove && this.props.opponentMove) {
+        if (!this.state.turnOrder.length) this.setTurnOrder();
+        else {
+          this.handleAttack();
+          this.handleTurn();
+        }
       }
     }
   }
 
   handleAttack() {
-    const attacker: Role = this.state.turnOrder[this.props.turnIndex]
-    const defender: Role = this.state.turnOrder[(this.props.turnIndex + 1) % 2]
+    const attacker: Role = this.state.turnOrder[this.props.turnIndex];
+    const defender: Role = this.state.turnOrder[(this.props.turnIndex + 1) % 2];
     this.props.attack({
       attacker: this.props[`${attacker}Pokemon`],
       defender: this.props[`${defender}Pokemon`],
       moveName: this.props[`${attacker}Move`],
       turn: attacker,
       types: this.props.types
-    })
+    });
   }
 
   handleTurn() {
     if (this.props.turnIndex === 0) {
-      this.props.switchTurn()
+      this.props.switchTurn();
+      this.setState({ logging: true });
     } else {
-      this.props.newTurn()
+      this.props.newTurn();
       this.setState({
         showMoves: false
-      })
+      });
       this.setState({
         turnOrder: []
-      })
+      });
+      this.setState({ logging: true });
     }
   }
 
@@ -108,52 +113,52 @@ class BattleGroundContainer extends React.Component<IProps> {
       opponentPokemon: this.props.opponentPokemon,
       playerMoveName: this.props.playerMove,
       opponentMoveName: this.props.opponentMove
-    })
+    });
     if (newTurnOrder) {
       this.setState({
         turnOrder: newTurnOrder
-      })
+      });
       this.setState({
         prevTurnOrder: newTurnOrder
-      })
+      });
     } else {
       this.setState({
         turnOrder: this.state.prevTurnOrder
-      })
+      });
     }
   }
 
   checkPokemon(trainer) {
     const fitPokemon = this.props[`${trainer}Party`].filter(
       pokemon => pokemon.status === "fit"
-    )
+    );
     if (trainer === "opponent") {
       if (!fitPokemon.length) {
-        window.prompt("you won")
+        window.prompt("you won");
       } else {
         if (this.state.aiOn) {
           this.props.selectPokemon({
             id: randomItem(fitPokemon).id,
             trainer
-          })
+          });
         }
       }
     } else {
       if (!fitPokemon.length) {
-        window.prompt("you lost")
+        window.prompt("you lost");
       } else {
         while (true) {
           const nextPokemonName = window.prompt(
             `your pokemon fainted. select another pokemon. Available:${fitPokemon.map(
               pokemon => pokemon.name
             )} `
-          )
+          );
           const nextPokemon = fitPokemon.filter(
             pokemon => pokemon.name === nextPokemonName
-          )[0]
+          )[0];
           if (nextPokemon.id) {
-            this.props.selectPokemon({ id: nextPokemon.id, trainer })
-            break
+            this.props.selectPokemon({ id: nextPokemon.id, trainer });
+            break;
           }
         }
       }
@@ -164,38 +169,44 @@ class BattleGroundContainer extends React.Component<IProps> {
     this.props.selectMove({
       moveName: e.target.name,
       trainer: "player"
-    })
+    });
     if (this.state.aiOn) {
       this.props.selectMove({
         moveName: randomItem(this.props.opponentPokemon.moves).name,
         trainer: "opponent"
-      })
+      });
     }
   }
 
   onAttackButtonClick() {
-    this.setState({ showMoves: !this.state.showMoves })
+    this.setState({ showMoves: !this.state.showMoves });
   }
 
   onSwitchOutButtonClick() {
-    this.setState({ showSwitchOut: !this.state.showSwitchOut })
+    this.setState({ showSwitchOut: !this.state.showSwitchOut });
   }
 
   onSelectButtonClick(e) {
-    this.props.selectPokemon({ id: Number(e.target.name), trainer: "player" })
-    this.props.selectMove({ moveName: "pass", trainer: "player" })
+    this.props.selectPokemon({ id: Number(e.target.name), trainer: "player" });
+    this.props.selectMove({ moveName: "pass", trainer: "player" });
     if (this.state.aiOn) {
       this.props.selectMove({
         moveName: randomItem(this.props.opponentPokemon.moves).name,
         trainer: "opponent"
-      })
+      });
     }
+  }
+
+  onNextButtonClick() {
+    this.setState({ logging: false });
   }
 
   render() {
     if (this.props.trainer.player) {
       return (
         <BattleGround
+          logging={this.state.logging}
+          onNextButtonClick={this.onNextButtonClick.bind(this)}
           onSelectButtonClick={this.onSelectButtonClick.bind(this)}
           toggleShowMoves={this.onAttackButtonClick.bind(this)}
           toggleShowSwitchOut={this.onSwitchOutButtonClick.bind(this)}
