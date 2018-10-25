@@ -14,7 +14,7 @@ export const socketIo = socketio => store => next => action => {
       break
 
     case PLAYER_SELECTED_MOVE:
-      socketio.playerAttacks(store.dispatch, {color: action.payload.color, attack: action.payload.attack})
+      socketio.playerAttacks(store.dispatch, {color: store.getState().trainer.player, attack: action.payload})
       break
 
   }
