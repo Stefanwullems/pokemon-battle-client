@@ -19,57 +19,61 @@ export default function({
     const move = attacker.moves.filter(move => move.name === moveName)[0];
     const newDefender: IPokemon = JSON.parse(JSON.stringify(defender));
 
-    if (Math.floor(Math.random() * 101) <= move.accuracy) {
-      const typeMultiplier =
-        types[defender.primaryType][`${move.type}_multiplier`] *
-        types[defender.secondaryType][`${move.type}_multiplier`];
+    // if (Math.floor(Math.random() * 101) <= move.accuracy) {
+    const typeMultiplier =
+      types[defender.primaryType][`${move.type}_multiplier`] *
+      types[defender.secondaryType][`${move.type}_multiplier`];
 
-      const damage =
-        (attacker.stats.attack / defender.stats.defense) *
+    // const plusMinus = 1.1 - Math.random() * 0.2;
+
+    const damage = Math.round(
+      (attacker.stats.attack / defender.stats.defense) *
         move.damage *
         0.2 *
-        typeMultiplier;
+        typeMultiplier
+      // * plusMinus
+    );
 
-      console.log(
-        attacker.name,
-        "did",
-        damage,
-        "damage to",
-        defender.name,
-        "with the move",
-        move.name,
-        "it was",
-        typeMultiplier === 1
-          ? "normally"
-          : typeMultiplier > 1
-            ? "super"
-            : "not very",
-        "effective"
-      );
+    console.log(
+      attacker.name,
+      "did",
+      damage,
+      "damage to",
+      defender.name,
+      "with the move",
+      move.name,
+      "it was",
+      typeMultiplier === 1
+        ? "normally"
+        : typeMultiplier > 1
+          ? "super"
+          : "not very",
+      "effective"
+    );
 
-      newDefender.stats.hp -= damage;
+    newDefender.stats.hp -= damage;
 
-      if (newDefender.stats.hp <= 0) {
-        newDefender.status = "fainted";
-        return {
-          type:
-            trainer === "PLAYER"
-              ? OPPONENT_POKEMON_FAINTED
-              : PLAYER_POKEMON_FAINTED,
-          payload: newDefender
-        };
-      } else {
-        return {
-          type:
-            trainer === "PLAYER" ? OPPONENT_GOT_ATTACKED : PLAYER_GOT_ATTACKED,
-          payload: newDefender
-        };
-      }
+    if (newDefender.stats.hp <= 0) {
+      newDefender.status = "fainted";
+      return {
+        type:
+          trainer === "PLAYER"
+            ? OPPONENT_POKEMON_FAINTED
+            : PLAYER_POKEMON_FAINTED,
+        payload: newDefender
+      };
     } else {
       return {
-        type: `${trainer}_MISSED`
+        type:
+          trainer === "PLAYER" ? OPPONENT_GOT_ATTACKED : PLAYER_GOT_ATTACKED,
+        payload: newDefender
       };
     }
+    // } else {
+    //   return {
+    //     type: `${trainer}_MISSED`
+    //   };
+    // }
   } else {
     return {
       type: `${trainer}_SWITCHED_OUT`

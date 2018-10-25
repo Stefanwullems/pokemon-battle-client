@@ -56,6 +56,10 @@ function queryForPokemon(id) {
               defense
               speed
             }
+            sprites{
+              front_sprite_url
+              back_sprite_url
+            }
             moves{
               name
               damage

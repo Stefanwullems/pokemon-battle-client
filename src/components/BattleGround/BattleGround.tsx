@@ -1,8 +1,8 @@
 import * as React from "react";
 import { IPokemon } from "../../tools/interfaces";
 import doesExist from "../../scripts/does-exist";
-// import EnemyContainer from './EnemyContainer';
-// import { YourContainer } from './YourContainer';
+import OpponentContainer from "./OpponentContainer";
+import PlayerContainer from "./PlayerContainer";
 // import { MenuContainer } from './MenuContainer';
 // import { SkillsContainer } from './SkillsContainer';
 // import { BattleInfoContainer } from './BattleInfoContainer'
@@ -15,7 +15,6 @@ interface IProps {
     | ((event: React.MouseEvent<HTMLButtonElement>) => void)
     | undefined;
   playerPokemon: IPokemon;
-  opponentPokemon: IPokemon;
   playerParty: IPokemon[];
   opponentParty: IPokemon[];
   showSwitchOut: boolean;
@@ -25,9 +24,9 @@ interface IProps {
 function BattleGround(props: IProps) {
   return (
     <div className="main">
-      {/* <EnemyContainer />
-      <YourContainer />
-      <div className="BottomDiv">
+      <OpponentContainer />
+      <PlayerContainer />
+      {/* <div className="BottomDiv">
       <BattleInfoContainer />
         <div className="SkillsDiv">
           <SkillsContainer />
@@ -38,14 +37,7 @@ function BattleGround(props: IProps) {
       </div> */}
       {/* Closing BottomDiv*/}
       <h1>Test</h1>
-      <h2>Opponent</h2>
-      <span>
-        {doesExist(props.opponentPokemon) && (
-          <span>
-            {props.opponentPokemon.name} [hp: {props.opponentPokemon.stats.hp}]
-          </span>
-        )}
-      </span>
+
       <h2>Player</h2>
       <div>
         {doesExist(props.playerPokemon) && (
@@ -84,14 +76,17 @@ function BattleGround(props: IProps) {
                 <span>
                   {pokemon.name} [hp: {pokemon.stats.hp}]
                 </span>
-                {pokemon.name !== props.playerPokemon.name && (
-                  <button
-                    onClick={props.onSelectButtonClick}
-                    name={pokemon.id.toString()}
-                  >
-                    select
-                  </button>
-                )}
+                {pokemon.name !== props.playerPokemon.name &&
+                  pokemon.stats.hp > 0 && (
+                    <button
+                      onClick={props.onSelectButtonClick}
+                      name={pokemon.id.toString()}
+                    >
+                      select
+                    </button>
+                  )}
+                {pokemon.name !== props.playerPokemon.name &&
+                  pokemon.stats.hp <= 0 && <strong>fainted</strong>}
                 {pokemon.name === props.playerPokemon.name && (
                   <strong>selected</strong>
                 )}

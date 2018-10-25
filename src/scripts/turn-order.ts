@@ -1,4 +1,4 @@
-import { ITurnOrderParams, ITurnOrder } from "../tools/interfaces";
+import { ITurnOrderParams, ITurnOrder, IMove } from "../tools/interfaces";
 
 export default function({
   playerPokemon,
@@ -8,13 +8,14 @@ export default function({
 }: ITurnOrderParams): ITurnOrder | undefined {
   if (playerMoveName === "pass") return ["player", "opponent"];
   if (opponentMoveName === "pass") return ["opponent", "player"];
-  const playerMove = getMove({
+
+  const playerMove: IMove = getMove({
     pokemon: playerPokemon,
     moveName: playerMoveName
   });
-  const opponentMove = getMove({
-    pokemon: playerPokemon,
-    moveName: playerMoveName
+  const opponentMove: IMove = getMove({
+    pokemon: opponentPokemon,
+    moveName: opponentMoveName
   });
 
   if (playerMove.priority === opponentMove.priority) {
