@@ -1,27 +1,19 @@
-import {ADD_GAME, UPDATE_GAME, UPDATE_GAMES} from '../actions/lobby/gameActions'
+import {ADD_GAME, GAMES_FETCHED, GAME_HOSTED } from '../actions/lobby/gameActions'
 
-export default(state:any = null , {type, payload}) => {
+export default(state:any = [] , {type, payload}) => {
   switch (type) {
-
     case ADD_GAME:
       return{
         ...state,
         [payload.id]: payload
       }
+    case GAMES_FETCHED:
+      return payload
 
-    case UPDATE_GAME:
-      return {
-        ...state,
-        [payload.id]: payload
-      }
-
-    case UPDATE_GAMES:
-      return payload.reduce((games, game) => {
-        games[game.id] = game
-        return games
-      }, {})
-
-    default:
+    case GAME_HOSTED:
+      return  state
+    
+      default:
       return state
   }
 }

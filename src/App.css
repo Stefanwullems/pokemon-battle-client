@@ -71,3 +71,26 @@ html, body
 	margin: 45% 3%;
 	box-shadow: 12px 0 0 #FFF, -12px 0 0 #FFF;
 }
+
+.game-card{
+	display:flex;
+	justify-content: left;
+}
+
+.outer-paper{
+	width: 50%;
+}
+
+.Links{
+	text-decoration: none;
+	color:white;
+}
+
+.Links:disabled{
+	color:white;
+}
+
+.PokeTable{
+	display: flex;
+	justify-content: center;
+}
