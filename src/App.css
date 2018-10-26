@@ -6,6 +6,7 @@ html, body
   height: 100vh;
   margin: 0;
   padding: 0;
+  background-color: rgb(233, 233, 233);
 }
 .MainPage{
     display: flex;
@@ -70,4 +71,141 @@ html, body
 	background-color:rgba(0,0,0,0);
 	margin: 45% 3%;
 	box-shadow: 12px 0 0 #FFF, -12px 0 0 #FFF;
+}
+
+.game-card{
+	display:flex;
+	justify-content: left;
+}
+
+.outer-paper{
+	width: 50%;
+}
+
+.Links{
+	text-decoration: none;
+	color:white;
+}
+
+.Links:disabled{
+	color:white;
+}
+
+.AwaitingLobby{
+	display: flex;
+	justify-content: center;
+}
+
+.stopPls{
+	display: flex;
+	justify-content: center;
+	position: relative;
+	top:14vh;
+	color:red;
+	
+}
+
+.pokeDivs{ 
+position: relative;
+top: 20vh;
+	display: flex;
+	justify-content: center;
+	width: 10vw;
+	height: 20vh;
+	background-color: #F6F6F6;
+	border-radius: 10px;
+	border: 1px solid;
+    padding: 10px;
+	box-shadow: 5px 10px 8px #888888;
+	margin-left: 10px;
+}
+
+.listImage{
+	position: absolute;
+	justify-content: center;
+	width: 8vw;
+	top:2vh;
+	height: 10vh;
+}
+
+
+
+.pokeDivText{
+	position: absolute;
+	top:13vh;
+	font-size: 28px;
+	font-family: 'Chakra Petch', sans-serif;
+}
+
+
+.pokeDivs:hover{ 
+		width: 12vw;
+		height: 22vh;
+		background-color: rgb(211, 211, 211);
+		border-radius: 15px;
+		border: 1px solid;
+		padding: 0px;
+		margin-left: 10px;
+		font-size: 30px;
+	}
+
+	.pokeDivs:active{
+		background-color: rgba(0, 177, 0, 0.589);
+		color:white;
+	}
+
+
+	.PageTitleHeader{
+		position: relative;
+		display: flex;
+		justify-content: center;
+		font-family: 'Chakra Petch', sans-serif;
+		top: 10vh;
+	}
+
+	.SelectedTitle{
+		display: flex;
+		justify-content: center;
+		position: relative;
+		top: 30vh;
+		font-family: 'Chakra Petch', sans-serif;
+	}
+
+	.SelecedpokeDivs{
+		position: relative;
+		top: 30vh;
+	display: flex;
+	justify-content: center;
+	width: 7vw;
+	height: 17vh;
+	background-color: #F6F6F6;
+	border-radius: 15px;
+	border: 1px solid;
+    padding: 10px;
+	box-shadow: 5px 10px 8px #888888;
+	margin-left: 10px;
+	}
+
+	.SlectedListImage{
+		position: absolute;
+	justify-content: center;
+	width: 5vw;
+	top:2vh;
+	height: 7vh;
+	}
+
+	.SelectedPokeDivText{
+		position: absolute;
+	top:11vh;
+	font-size: 20px;
+	font-family: 'Chakra Petch', sans-serif;
+}
+
+.startingButton{
+	position: relative;
+	top: 33vh;
+	left: 39vw;
+	width: 7vw;
+	height: 5vh;	
+	
 }
