@@ -102,11 +102,7 @@ html, body
 	position: relative;
 	top:14vh;
 	color:red;
-	visibility: hidden;
-}
-
-.makeVisible{
-	visibility: visible;
+	
 }
 
 .pokeDivs{ 
@@ -117,7 +113,7 @@ top: 20vh;
 	width: 10vw;
 	height: 20vh;
 	background-color: #F6F6F6;
-	border-radius: 15px;
+	border-radius: 10px;
 	border: 1px solid;
     padding: 10px;
 	box-shadow: 5px 10px 8px #888888;
@@ -203,4 +199,13 @@ top: 20vh;
 	top:11vh;
 	font-size: 20px;
 	font-family: 'Chakra Petch', sans-serif;
+}
+
+.startingButton{
+	position: relative;
+	top: 33vh;
+	left: 47vw;
+	width: 7vw;
+	height: 5vh;	
+	
 }
