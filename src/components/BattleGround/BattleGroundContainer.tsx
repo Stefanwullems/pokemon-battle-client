@@ -21,6 +21,7 @@ import {
 import randomItem from "../../scripts/random-item";
 import PlayerContainer from "./PlayerContainer";
 import OpponentContainer from "./OpponentContainer";
+import { Paper } from "@material-ui/core";
 
 interface IProps {
   fetchPokemon: (fetchParams: IFetchPokemonParams) => void;
@@ -166,7 +167,7 @@ class BattleGroundContainer extends React.Component<IProps> {
 
   render() {
     return (
-      <div className="main">
+      <Paper style={{ padding: 10 }}>
         <OpponentContainer />
         <PlayerContainer />
         <BattleInfoContainer
@@ -174,7 +175,7 @@ class BattleGroundContainer extends React.Component<IProps> {
           logging={this.state.logging}
           onNextButtonClick={this.onNextButtonClick.bind(this)}
         />
-      </div>
+      </Paper>
     );
   }
 }

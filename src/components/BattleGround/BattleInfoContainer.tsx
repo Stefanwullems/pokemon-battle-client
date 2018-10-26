@@ -11,7 +11,6 @@ import randomItem from "../../scripts/random-item";
 import selectPokemon from "../../actions/pokemon/select-pokemon";
 import selectMove from "../../actions/gameLogic/select-move";
 import SelectPokemonPanel from "../BattleInfoComponents/SelectPokemonPanel";
-import { Paper } from "@material-ui/core";
 
 interface IProps {
   log: string;
@@ -65,7 +64,7 @@ class BattleInfoContainer extends React.Component<IProps> {
 
   render() {
     return (
-      <Paper>
+      <div>
         {this.props.logging && (
           <LogPanel
             log={this.props.log}
@@ -89,7 +88,7 @@ class BattleInfoContainer extends React.Component<IProps> {
             />
           </React.Fragment>
         )}
-      </Paper>
+      </div>
     );
   }
 }
