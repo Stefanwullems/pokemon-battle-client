@@ -41,7 +41,7 @@ class BattleInfoContainer extends React.Component<IProps> {
   }
 
   onMoveButtonClick(e) {
-    console.log(e.target.name);
+    console.log(e.currentTarget);
     this.props.selectMove({
       moveName: e.target.name,
       trainer: "player"
@@ -67,7 +67,7 @@ class BattleInfoContainer extends React.Component<IProps> {
           toggleShowMoves={this.props.toggleShowMoves}
           showMoves={this.props.showMoves}
           playerPokemon={this.props.playerPokemon}
-          selectMove={this.onMoveButtonClick.bind(this)}
+          onMoveButtonClick={this.onMoveButtonClick.bind(this)}
         />
 
         {!this.props.logging && (

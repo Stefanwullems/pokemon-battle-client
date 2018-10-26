@@ -8,7 +8,7 @@ interface IProps {
   toggleShowMoves: () => void;
   showMoves: boolean;
   playerPokemon: IPokemon;
-  selectMove: (e) => void;
+  onMoveButtonClick: (e) => void;
 }
 
 function AttackPanel(props: IProps) {
@@ -27,11 +27,11 @@ function AttackPanel(props: IProps) {
                       return (
                         <div key={move.name}>
                           <button
-                            onClick={props.selectMove}
+                            onClick={props.onMoveButtonClick}
                             name={move.name}
                             className="player"
                           >
-                            <strong>{move.name}</strong>
+                            {move.name}
                           </button>
                           <span>
                             {"  "}
