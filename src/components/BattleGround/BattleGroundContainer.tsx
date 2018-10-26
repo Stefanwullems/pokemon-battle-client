@@ -23,6 +23,7 @@ import PlayerContainer from "./PlayerContainer";
 import OpponentContainer from "./OpponentContainer";
 import { Paper } from "@material-ui/core";
 
+
 interface IProps {
   fetchPokemon: (fetchParams: IFetchPokemonParams) => void;
   switchTurn: () => void;
@@ -39,13 +40,18 @@ interface IProps {
   opponentParty: IPokemon[];
   playerParty: IPokemon[];
   types: ITypes;
+  trainer: {
+    red: string | null,
+    blue: string | null,
+    player: "red" | "blue"
+  }
 }
 
 class BattleGroundContainer extends React.Component<IProps> {
   state = {
     turnOrder: [],
     prevTurnOrder: [],
-    aiOn: true,
+    aiOn: false,
     logging: false
   };
 
@@ -166,6 +172,7 @@ class BattleGroundContainer extends React.Component<IProps> {
   }
 
   render() {
+
     return (
       <Paper style={{ padding: 10 }}>
         <OpponentContainer />
@@ -181,6 +188,16 @@ class BattleGroundContainer extends React.Component<IProps> {
 }
 
 const mapStateToProps = ({
+                           playerPokemon,
+                           opponentPokemon,
+                           turnIndex,
+                           playerMove,
+                           opponentMove,
+                           opponentParty,
+                           playerParty,
+                           types,
+                           trainer
+                         }) => ({
   playerPokemon,
   opponentPokemon,
   turnIndex,
@@ -188,17 +205,9 @@ const mapStateToProps = ({
   opponentMove,
   opponentParty,
   playerParty,
-  types
-}) => ({
-  playerPokemon,
-  opponentPokemon,
-  turnIndex,
-  playerMove,
-  opponentMove,
-  opponentParty,
-  playerParty,
-  types
-});
+  types,
+  trainer
+})
 
 export default connect(
   mapStateToProps,
@@ -211,4 +220,4 @@ export default connect(
     selectMove,
     fetchTypes
   }
-)(BattleGroundContainer);
+)(BattleGroundContainer)

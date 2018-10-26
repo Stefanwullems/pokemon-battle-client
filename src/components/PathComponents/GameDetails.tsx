@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {connect} from 'react-redux'
-import {getGames, joinGame, updateGame} from '../../actions/lobby/gameActions'
+import {getGames, joinGame} from '../../actions/lobby/gameActions'
 
 import Paper from '@material-ui/core/Paper'
 import './GameDetails.css'
@@ -30,12 +30,12 @@ class GameDetails extends React.Component {
 }
 
 const mapStateToProps = (state, props) => ({
-  game: state.games && state.games[props.match.params.id],
+  game: state.games ,
   trainers: state.trainers
 })
 
 const mapDispatchToProps = {
-  getGames, joinGame, updateGame
+  getGames, joinGame
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameDetails)
