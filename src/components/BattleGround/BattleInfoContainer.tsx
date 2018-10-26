@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import doesExist from "../../scripts/does-exist";
 import {
   IPokemon,
   ISelectPokemonParams,
@@ -11,24 +10,27 @@ import AttackPanel from "../BattleInfoComponents/AttackPanel";
 import randomItem from "../../scripts/random-item";
 import selectPokemon from "../../actions/pokemon/select-pokemon";
 import selectMove from "../../actions/gameLogic/select-move";
+import SelectPokemonPanel from "../BattleInfoComponents/SelectPokemonPanel";
+import { Paper } from "@material-ui/core";
 
 interface IProps {
   log: string;
   logging: boolean;
   onNextButtonClick: () => void;
   playerPokemon: IPokemon;
-  toggleShowMoves: () => void;
-  showMoves: boolean;
   selectMove: (selectMoveParams: ISelectMoveParams) => void;
-  toggleShowSwitchOut: () => void;
   playerParty: IPokemon[];
-  showSwitchOut: boolean;
   opponentPokemon: IPokemon;
   selectPokemon: (selectPokemonParams: ISelectPokemonParams) => void;
   aiOn: boolean;
 }
 
 class BattleInfoContainer extends React.Component<IProps> {
+  state = {
+    showSwitchOut: false,
+    showMoves: false
+  };
+
   onSelectButtonClick(e) {
     this.props.selectPokemon({ id: Number(e.target.name), trainer: "player" });
     this.props.selectMove({ moveName: "pass", trainer: "player" });
@@ -41,7 +43,6 @@ class BattleInfoContainer extends React.Component<IProps> {
   }
 
   onMoveButtonClick(e) {
-    console.log(e.currentTarget);
     this.props.selectMove({
       moveName: e.target.name,
       trainer: "player"
@@ -54,53 +55,41 @@ class BattleInfoContainer extends React.Component<IProps> {
     }
   }
 
+  toggleShowSwitchOut() {
+    this.setState({ showSwitchOut: !this.state.showSwitchOut });
+  }
+
+  toggleShowMoves() {
+    this.setState({ showMoves: !this.state.showMoves });
+  }
+
   render() {
     return (
-      <React.Fragment>
-        <LogPanel
-          log={this.props.log}
-          logging={this.props.logging}
-          onNextButtonClick={this.props.onNextButtonClick}
-        />
-        <AttackPanel
-          logging={this.props.logging}
-          toggleShowMoves={this.props.toggleShowMoves}
-          showMoves={this.props.showMoves}
-          playerPokemon={this.props.playerPokemon}
-          onMoveButtonClick={this.onMoveButtonClick.bind(this)}
-        />
-
+      <Paper>
+        {this.props.logging && (
+          <LogPanel
+            log={this.props.log}
+            onNextButtonClick={this.props.onNextButtonClick}
+          />
+        )}
         {!this.props.logging && (
           <React.Fragment>
-            <button onClick={this.props.toggleShowSwitchOut}>Switch Out</button>
-            {doesExist(this.props.playerParty) &&
-              this.props.showSwitchOut &&
-              this.props.playerParty.map(pokemon => {
-                return (
-                  <div key={pokemon.name}>
-                    <span>
-                      {pokemon.name} [hp: {pokemon.stats.hp}]
-                    </span>
-                    {pokemon.name !== this.props.playerPokemon.name &&
-                      pokemon.stats.hp > 0 && (
-                        <button
-                          onClick={this.onSelectButtonClick}
-                          name={pokemon.id.toString()}
-                        >
-                          select
-                        </button>
-                      )}
-                    {pokemon.name !== this.props.playerPokemon.name &&
-                      pokemon.stats.hp <= 0 && <strong>fainted</strong>}
-                    {pokemon.name === this.props.playerPokemon.name && (
-                      <strong>selected</strong>
-                    )}
-                  </div>
-                );
-              })}
+            <AttackPanel
+              toggleShowMoves={this.toggleShowMoves.bind(this)}
+              showMoves={this.state.showMoves}
+              playerPokemon={this.props.playerPokemon}
+              onMoveButtonClick={this.onMoveButtonClick.bind(this)}
+            />
+            <SelectPokemonPanel
+              toggleShowSwitchOut={this.toggleShowSwitchOut.bind(this)}
+              playerParty={this.props.playerParty}
+              showSwitchOut={this.state.showSwitchOut}
+              playerPokemon={this.props.playerPokemon}
+              onSelectButtonClick={this.onSelectButtonClick.bind(this)}
+            />
           </React.Fragment>
         )}
-      </React.Fragment>
+      </Paper>
     );
   }
 }

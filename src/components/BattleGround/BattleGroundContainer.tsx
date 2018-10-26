@@ -42,9 +42,7 @@ interface IProps {
 
 class BattleGroundContainer extends React.Component<IProps> {
   state = {
-    showMoves: false,
     turnOrder: [],
-    showSwitchOut: false,
     prevTurnOrder: [],
     aiOn: true,
     logging: false
@@ -162,14 +160,6 @@ class BattleGroundContainer extends React.Component<IProps> {
     }
   }
 
-  onAttackButtonClick() {
-    this.setState({ showMoves: !this.state.showMoves });
-  }
-
-  onSwitchOutButtonClick() {
-    this.setState({ showSwitchOut: !this.state.showSwitchOut });
-  }
-
   onNextButtonClick() {
     this.setState({ logging: false });
   }
@@ -183,10 +173,6 @@ class BattleGroundContainer extends React.Component<IProps> {
           aiOn={this.state.aiOn}
           logging={this.state.logging}
           onNextButtonClick={this.onNextButtonClick.bind(this)}
-          toggleShowMoves={this.onAttackButtonClick.bind(this)}
-          toggleShowSwitchOut={this.onSwitchOutButtonClick.bind(this)}
-          showMoves={this.state.showMoves}
-          showSwitchOut={this.state.showSwitchOut}
         />
       </div>
     );
