@@ -6,10 +6,8 @@ export default function(state = null, { type, payload }) {
 
     case OPPONENT_SELECTED_MOVE:
       return payload;
-
     case NEW_TURN:
       return null;
-
     default:
       return state;
   }
