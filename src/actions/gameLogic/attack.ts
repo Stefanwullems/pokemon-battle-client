@@ -56,7 +56,7 @@ export default function({
           payload:
             `${attacker.name} attacked ${defender.name} with the move ${
               move.name
-            }` + effectiveness
+            } ` + effectiveness
         });
       } else {
         dispatch({
@@ -69,7 +69,7 @@ export default function({
           payload:
             `${attacker.name} attacked ${defender.name} with the move ${
               move.name
-            }` + effectiveness
+            } ` + effectiveness
         });
       }
     } else {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import BattleGround from "./BattleGround";
+import BattleInfoContainer from "./BattleInfoContainer";
 import { connect } from "react-redux";
 import fetchPokemon from "../../actions/pokemon/fetch-pokemon";
 import switchTurn from "../../actions/gameLogic/switch-turn";
@@ -14,20 +14,22 @@ import {
   IAttackParams,
   Role,
   IFetchPokemonParams,
-  ISelectPokemonParams,
   ISelectMoveParams,
-  ITypes
+  ITypes,
+  ISelectPokemonParams
 } from "../../tools/interfaces";
 import randomItem from "../../scripts/random-item";
+import PlayerContainer from "./PlayerContainer";
+import OpponentContainer from "./OpponentContainer";
 
 interface IProps {
   fetchPokemon: (fetchParams: IFetchPokemonParams) => void;
   switchTurn: () => void;
-  selectPokemon: (selectPokemonParams: ISelectPokemonParams) => void;
   newTurn: () => void;
   selectMove: (selectMoveParams: ISelectMoveParams) => void;
   attack: (attack: IAttackParams) => void;
   fetchTypes: () => void;
+  selectPokemon: (selectPokemonParams: ISelectPokemonParams) => void;
   playerPokemon: IPokemon;
   opponentPokemon: IPokemon;
   turnIndex: number;
@@ -160,19 +162,6 @@ class BattleGroundContainer extends React.Component<IProps> {
     }
   }
 
-  onMoveButtonClick(e) {
-    this.props.selectMove({
-      moveName: e.target.name,
-      trainer: "player"
-    });
-    if (this.state.aiOn) {
-      this.props.selectMove({
-        moveName: randomItem(this.props.opponentPokemon.moves).name,
-        trainer: "opponent"
-      });
-    }
-  }
-
   onAttackButtonClick() {
     this.setState({ showMoves: !this.state.showMoves });
   }
@@ -181,36 +170,25 @@ class BattleGroundContainer extends React.Component<IProps> {
     this.setState({ showSwitchOut: !this.state.showSwitchOut });
   }
 
-  onSelectButtonClick(e) {
-    this.props.selectPokemon({ id: Number(e.target.name), trainer: "player" });
-    this.props.selectMove({ moveName: "pass", trainer: "player" });
-    if (this.state.aiOn) {
-      this.props.selectMove({
-        moveName: randomItem(this.props.opponentPokemon.moves).name,
-        trainer: "opponent"
-      });
-    }
-  }
-
   onNextButtonClick() {
     this.setState({ logging: false });
   }
 
   render() {
     return (
-      <BattleGround
-        logging={this.state.logging}
-        onNextButtonClick={this.onNextButtonClick.bind(this)}
-        onSelectButtonClick={this.onSelectButtonClick.bind(this)}
-        toggleShowMoves={this.onAttackButtonClick.bind(this)}
-        toggleShowSwitchOut={this.onSwitchOutButtonClick.bind(this)}
-        showMoves={this.state.showMoves}
-        selectMove={this.onMoveButtonClick.bind(this)}
-        playerPokemon={this.props.playerPokemon}
-        opponentParty={this.props.opponentParty}
-        playerParty={this.props.playerParty}
-        showSwitchOut={this.state.showSwitchOut}
-      />
+      <div className="main">
+        <OpponentContainer />
+        <PlayerContainer />
+        <BattleInfoContainer
+          aiOn={this.state.aiOn}
+          logging={this.state.logging}
+          onNextButtonClick={this.onNextButtonClick.bind(this)}
+          toggleShowMoves={this.onAttackButtonClick.bind(this)}
+          toggleShowSwitchOut={this.onSwitchOutButtonClick.bind(this)}
+          showMoves={this.state.showMoves}
+          showSwitchOut={this.state.showSwitchOut}
+        />
+      </div>
     );
   }
 }
