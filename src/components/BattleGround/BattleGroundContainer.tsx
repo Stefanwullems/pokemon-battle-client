@@ -1,33 +1,37 @@
-import * as React from "react"
-import BattleGround from "./BattleGround"
-import { connect } from "react-redux"
-import fetchPokemon from "../../actions/pokemon/fetch-pokemon"
-import switchTurn from "../../actions/gameLogic/switch-turn"
-import selectPokemon from "../../actions/pokemon/select-pokemon"
-import newTurn from "../../actions/gameLogic/new-turn"
-import getTurnOrder from "../../scripts/turn-order"
-import attack from "../../actions/gameLogic/attack"
-import selectMove from "../../actions/gameLogic/select-move"
-import fetchTypes from "../../actions/types/fetch-types"
+import * as React from "react";
+import BattleInfoContainer from "./BattleInfoContainer";
+import { connect } from "react-redux";
+import fetchPokemon from "../../actions/pokemon/fetch-pokemon";
+import switchTurn from "../../actions/gameLogic/switch-turn";
+import selectPokemon from "../../actions/pokemon/select-pokemon";
+import newTurn from "../../actions/gameLogic/new-turn";
+import getTurnOrder from "../../scripts/turn-order";
+import attack from "../../actions/gameLogic/attack";
+import selectMove from "../../actions/gameLogic/select-move";
+import fetchTypes from "../../actions/types/fetch-types";
 import {
   IPokemon,
   IAttackParams,
   Role,
   IFetchPokemonParams,
-  ISelectPokemonParams,
   ISelectMoveParams,
-  ITypes
-} from "../../tools/interfaces"
-import randomItem from "../../scripts/random-item"
+  ITypes,
+  ISelectPokemonParams
+} from "../../tools/interfaces";
+import randomItem from "../../scripts/random-item";
+import PlayerContainer from "./PlayerContainer";
+import OpponentContainer from "./OpponentContainer";
+import { Paper } from "@material-ui/core";
+
 
 interface IProps {
   fetchPokemon: (fetchParams: IFetchPokemonParams) => void;
   switchTurn: () => void;
-  selectPokemon: (selectPokemonParams: ISelectPokemonParams) => void;
   newTurn: () => void;
   selectMove: (selectMoveParams: ISelectMoveParams) => void;
   attack: (attack: IAttackParams) => void;
   fetchTypes: () => void;
+  selectPokemon: (selectPokemonParams: ISelectPokemonParams) => void;
   playerPokemon: IPokemon;
   opponentPokemon: IPokemon;
   turnIndex: number;
@@ -45,9 +49,7 @@ interface IProps {
 
 class BattleGroundContainer extends React.Component<IProps> {
   state = {
-    showMoves: false,
     turnOrder: [],
-    showSwitchOut: false,
     prevTurnOrder: [],
     aiOn: false,
     logging: false
@@ -165,63 +167,23 @@ class BattleGroundContainer extends React.Component<IProps> {
     }
   }
 
-  onMoveButtonClick(e) {
-    this.props.selectMove({
-      moveName: e.target.name,
-      trainer: "player"
-    });
-    if (this.state.aiOn) {
-      this.props.selectMove({
-        moveName: randomItem(this.props.opponentPokemon.moves).name,
-        trainer: "opponent"
-      });
-    }
-  }
-
-  onAttackButtonClick() {
-    this.setState({ showMoves: !this.state.showMoves });
-  }
-
-  onSwitchOutButtonClick() {
-    this.setState({ showSwitchOut: !this.state.showSwitchOut });
-  }
-
-  onSelectButtonClick(e) {
-    this.props.selectPokemon({ id: Number(e.target.name), trainer: "player" });
-    this.props.selectMove({ moveName: "pass", trainer: "player" });
-    if (this.state.aiOn) {
-      this.props.selectMove({
-        moveName: randomItem(this.props.opponentPokemon.moves).name,
-        trainer: "opponent"
-      });
-    }
-  }
-
   onNextButtonClick() {
     this.setState({ logging: false });
   }
 
   render() {
-    if (this.props.trainer.player) {
-      return (
-        <BattleGround
+
+    return (
+      <Paper style={{ padding: 10 }}>
+        <OpponentContainer />
+        <PlayerContainer />
+        <BattleInfoContainer
+          aiOn={this.state.aiOn}
           logging={this.state.logging}
           onNextButtonClick={this.onNextButtonClick.bind(this)}
-          onSelectButtonClick={this.onSelectButtonClick.bind(this)}
-          toggleShowMoves={this.onAttackButtonClick.bind(this)}
-          toggleShowSwitchOut={this.onSwitchOutButtonClick.bind(this)}
-          showMoves={this.state.showMoves}
-          selectMove={this.onMoveButtonClick.bind(this)}
-          playerPokemon={this.props.playerPokemon}
-          opponentParty={this.props.opponentParty}
-          playerParty={this.props.playerParty}
-          showSwitchOut={this.state.showSwitchOut}
         />
-      )
-    }
-    else {
-      return null
-    }
+      </Paper>
+    );
   }
 }
 
