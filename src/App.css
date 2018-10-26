@@ -6,6 +6,7 @@ html, body
   height: 100vh;
   margin: 0;
   padding: 0;
+  background-color: rgb(233, 233, 233);
 }
 .MainPage{
     display: flex;
@@ -95,6 +96,19 @@ html, body
 	justify-content: center;
 }
 
+.stopPls{
+	display: flex;
+	justify-content: center;
+	position: relative;
+	top:14vh;
+	color:red;
+	visibility: hidden;
+}
+
+.makeVisible{
+	visibility: visible;
+}
+
 .pokeDivs{ 
 position: relative;
 top: 20vh;
@@ -159,6 +173,34 @@ top: 20vh;
 		position: relative;
 		top: 30vh;
 		font-family: 'Chakra Petch', sans-serif;
-		
-	
 	}
+
+	.SelecedpokeDivs{
+		position: relative;
+		top: 30vh;
+	display: flex;
+	justify-content: center;
+	width: 7vw;
+	height: 17vh;
+	background-color: #F6F6F6;
+	border-radius: 15px;
+	border: 1px solid;
+    padding: 10px;
+	box-shadow: 5px 10px 8px #888888;
+	margin-left: 10px;
+	}
+
+	.SlectedListImage{
+		position: absolute;
+	justify-content: center;
+	width: 5vw;
+	top:2vh;
+	height: 7vh;
+	}
+
+	.SelectedPokeDivText{
+		position: absolute;
+	top:11vh;
+	font-size: 20px;
+	font-family: 'Chakra Petch', sans-serif;
+}
