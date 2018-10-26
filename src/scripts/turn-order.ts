@@ -18,6 +18,8 @@ export default function({
     moveName: opponentMoveName
   });
 
+  console.log('playerMove = ', playerMove)
+  console.log('opponentMove = ', opponentMove)
   if (playerMove.priority === opponentMove.priority) {
     if (playerPokemon.stats.speed > opponentPokemon.stats.speed) {
       return ["player", "opponent"];

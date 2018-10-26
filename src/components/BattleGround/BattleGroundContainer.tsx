@@ -1,14 +1,14 @@
-import * as React from "react";
-import BattleGround from "./BattleGround";
-import { connect } from "react-redux";
-import fetchPokemon from "../../actions/pokemon/fetch-pokemon";
-import switchTurn from "../../actions/gameLogic/switch-turn";
-import selectPokemon from "../../actions/pokemon/select-pokemon";
-import newTurn from "../../actions/gameLogic/new-turn";
-import getTurnOrder from "../../scripts/turn-order";
-import attack from "../../actions/gameLogic/attack";
-import selectMove from "../../actions/gameLogic/select-move";
-import fetchTypes from "../../actions/types/fetch-types";
+import * as React from "react"
+import BattleGround from "./BattleGround"
+import { connect } from "react-redux"
+import fetchPokemon from "../../actions/pokemon/fetch-pokemon"
+import switchTurn from "../../actions/gameLogic/switch-turn"
+import selectPokemon from "../../actions/pokemon/select-pokemon"
+import newTurn from "../../actions/gameLogic/new-turn"
+import getTurnOrder from "../../scripts/turn-order"
+import attack from "../../actions/gameLogic/attack"
+import selectMove from "../../actions/gameLogic/select-move"
+import fetchTypes from "../../actions/types/fetch-types"
 import {
   IPokemon,
   IAttackParams,
@@ -17,8 +17,8 @@ import {
   ISelectPokemonParams,
   ISelectMoveParams,
   ITypes
-} from "../../tools/interfaces";
-import randomItem from "../../scripts/random-item";
+} from "../../tools/interfaces"
+import randomItem from "../../scripts/random-item"
 
 interface IProps {
   fetchPokemon: (fetchParams: IFetchPokemonParams) => void;
@@ -36,6 +36,11 @@ interface IProps {
   opponentParty: IPokemon[];
   playerParty: IPokemon[];
   types: ITypes;
+  trainer: {
+    red: string | null,
+    blue: string | null,
+    player: "red" | "blue"
+  }
 }
 
 class BattleGroundContainer extends React.Component<IProps> {
@@ -44,7 +49,8 @@ class BattleGroundContainer extends React.Component<IProps> {
     turnOrder: [],
     showSwitchOut: false,
     prevTurnOrder: [],
-    aiOn: false
+    aiOn: false,
+    logging: false
   };
 
   async componentDidMount() {
@@ -56,17 +62,19 @@ class BattleGroundContainer extends React.Component<IProps> {
   }
 
   componentDidUpdate() {
-    if (this.props.opponentPokemon.status === "fainted") {
-      this.checkPokemon("opponent");
-    }
-    if (this.props.playerPokemon.status === "fainted") {
-      this.checkPokemon("player");
-    }
-    if (this.props.playerMove && this.props.opponentMove) {
-      if (!this.state.turnOrder.length) this.setTurnOrder();
-      else {
-        this.handleAttack();
-        this.handleTurn();
+    if (!this.state.logging) {
+      if (this.props.opponentPokemon.status === "fainted") {
+        this.checkPokemon("opponent");
+      }
+      if (this.props.playerPokemon.status === "fainted") {
+        this.checkPokemon("player");
+      }
+      if (this.props.playerMove && this.props.opponentMove) {
+        if (!this.state.turnOrder.length) this.setTurnOrder();
+        else {
+          this.handleAttack();
+          this.handleTurn();
+        }
       }
     }
   }
@@ -86,6 +94,7 @@ class BattleGroundContainer extends React.Component<IProps> {
   handleTurn() {
     if (this.props.turnIndex === 0) {
       this.props.switchTurn();
+      this.setState({ logging: true });
     } else {
       this.props.newTurn();
       this.setState({
@@ -94,6 +103,7 @@ class BattleGroundContainer extends React.Component<IProps> {
       this.setState({
         turnOrder: []
       });
+      this.setState({ logging: true });
     }
   }
 
@@ -187,24 +197,45 @@ class BattleGroundContainer extends React.Component<IProps> {
     }
   }
 
+  onNextButtonClick() {
+    this.setState({ logging: false });
+  }
+
   render() {
-    return (
-      <BattleGround
-        onSelectButtonClick={this.onSelectButtonClick.bind(this)}
-        toggleShowMoves={this.onAttackButtonClick.bind(this)}
-        toggleShowSwitchOut={this.onSwitchOutButtonClick.bind(this)}
-        showMoves={this.state.showMoves}
-        selectMove={this.onMoveButtonClick.bind(this)}
-        playerPokemon={this.props.playerPokemon}
-        opponentParty={this.props.opponentParty}
-        playerParty={this.props.playerParty}
-        showSwitchOut={this.state.showSwitchOut}
-      />
-    );
+    if (this.props.trainer.player) {
+      return (
+        <BattleGround
+          logging={this.state.logging}
+          onNextButtonClick={this.onNextButtonClick.bind(this)}
+          onSelectButtonClick={this.onSelectButtonClick.bind(this)}
+          toggleShowMoves={this.onAttackButtonClick.bind(this)}
+          toggleShowSwitchOut={this.onSwitchOutButtonClick.bind(this)}
+          showMoves={this.state.showMoves}
+          selectMove={this.onMoveButtonClick.bind(this)}
+          playerPokemon={this.props.playerPokemon}
+          opponentParty={this.props.opponentParty}
+          playerParty={this.props.playerParty}
+          showSwitchOut={this.state.showSwitchOut}
+        />
+      )
+    }
+    else {
+      return null
+    }
   }
 }
 
 const mapStateToProps = ({
+                           playerPokemon,
+                           opponentPokemon,
+                           turnIndex,
+                           playerMove,
+                           opponentMove,
+                           opponentParty,
+                           playerParty,
+                           types,
+                           trainer
+                         }) => ({
   playerPokemon,
   opponentPokemon,
   turnIndex,
@@ -212,17 +243,9 @@ const mapStateToProps = ({
   opponentMove,
   opponentParty,
   playerParty,
-  types
-}) => ({
-  playerPokemon,
-  opponentPokemon,
-  turnIndex,
-  playerMove,
-  opponentMove,
-  opponentParty,
-  playerParty,
-  types
-});
+  types,
+  trainer
+})
 
 export default connect(
   mapStateToProps,
@@ -235,4 +258,4 @@ export default connect(
     selectMove,
     fetchTypes
   }
-)(BattleGroundContainer);
+)(BattleGroundContainer)
