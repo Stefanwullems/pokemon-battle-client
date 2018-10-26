@@ -20,6 +20,7 @@ export default class WaitingRoom extends React.Component {
     return (
       <div className="AwaitingLobby">
         <Paper className="outer-paper">
+        <h1 className="WaitingLobbyHeader"> All PLayers Ready! </h1>
           <Button
             disabled={this.isFull('yes')}
             color="primary"
