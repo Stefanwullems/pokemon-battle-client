@@ -207,5 +207,12 @@ top: 20vh;
 	left: 39vw;
 	width: 7vw;
 	height: 5vh;	
-	
+}
+
+
+.WaitingLobbyHeader{
+	font-family: 'Chakra Petch', sans-serif;
+	font-size: 30px;
+	word-spacing: 4px;
+	text-shadow: 3px black; 
 }

@@ -7,22 +7,13 @@ import { Link } from 'react-router-dom';
 
 export default class WaitingRoom extends React.Component {
 
-
-  isFull = input => {
-    if (input === 'yes') {
-      return false;
-    } else {
-      return true;
-    }
-  };
   render() {
   
     return (
       <div className="AwaitingLobby">
         <Paper className="outer-paper">
-        <h1 className="WaitingLobbyHeader"> All PLayers Ready! </h1>
+        <h1 className="WaitingLobbyHeader"> All Payers Ready! </h1>
           <Button
-            disabled={this.isFull('yes')}
             color="primary"
             variant="contained"
             className="create-game">
