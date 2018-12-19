@@ -10,7 +10,7 @@ import playerMove from "./playerMove";
 import opponentMove from "./opponentMove";
 import types from "./types";
 import log from "./log";
-
+import playerPartyIds from "./playerPartyIds";
 export default combineReducers({
   playerParty,
   opponentParty,
@@ -22,5 +22,6 @@ export default combineReducers({
   playerMove,
   opponentMove,
   types,
-  log
+  log,
+  playerPartyIds
 });

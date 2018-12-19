@@ -23,7 +23,6 @@ import PlayerContainer from "./PlayerContainer";
 import OpponentContainer from "./OpponentContainer";
 import { Paper } from "@material-ui/core";
 
-
 interface IProps {
   fetchPokemon: (fetchParams: IFetchPokemonParams) => void;
   switchTurn: () => void;
@@ -41,24 +40,33 @@ interface IProps {
   playerParty: IPokemon[];
   types: ITypes;
   trainer: {
-    red: string | null,
-    blue: string | null,
-    player: "red" | "blue"
-  }
+    red: string | null;
+    blue: string | null;
+    player: "red" | "blue";
+  };
+  playerPartyIds;
 }
 
 class BattleGroundContainer extends React.Component<IProps> {
   state = {
     turnOrder: [],
     prevTurnOrder: [],
-    aiOn: false,
+    aiOn: true,
     logging: false
   };
 
   async componentDidMount() {
-    const { fetchPokemon, selectPokemon, fetchTypes } = this.props;
+    const {
+      fetchPokemon,
+      selectPokemon,
+      fetchTypes,
+      playerPartyIds
+    } = this.props;
     await fetchTypes();
-    await fetchPokemon({ playerPartyIds: [2, 5], opponentPartyIds: [5, 8] });
+    await fetchPokemon({
+      playerPartyIds,
+      opponentPartyIds: [5, 8, 123]
+    });
     selectPokemon({ id: 5, trainer: "opponent" });
     selectPokemon({ id: 2, trainer: "player" });
   }
@@ -172,7 +180,6 @@ class BattleGroundContainer extends React.Component<IProps> {
   }
 
   render() {
-
     return (
       <Paper style={{ padding: 10 }}>
         <OpponentContainer />
@@ -188,16 +195,6 @@ class BattleGroundContainer extends React.Component<IProps> {
 }
 
 const mapStateToProps = ({
-                           playerPokemon,
-                           opponentPokemon,
-                           turnIndex,
-                           playerMove,
-                           opponentMove,
-                           opponentParty,
-                           playerParty,
-                           types,
-                           trainer
-                         }) => ({
   playerPokemon,
   opponentPokemon,
   turnIndex,
@@ -206,8 +203,20 @@ const mapStateToProps = ({
   opponentParty,
   playerParty,
   types,
-  trainer
-})
+  trainer,
+  playerPartyIds
+}) => ({
+  playerPokemon,
+  opponentPokemon,
+  turnIndex,
+  playerMove,
+  opponentMove,
+  opponentParty,
+  playerParty,
+  types,
+  trainer,
+  playerPartyIds
+});
 
 export default connect(
   mapStateToProps,
@@ -220,4 +229,4 @@ export default connect(
     selectMove,
     fetchTypes
   }
-)(BattleGroundContainer)
+)(BattleGroundContainer);
