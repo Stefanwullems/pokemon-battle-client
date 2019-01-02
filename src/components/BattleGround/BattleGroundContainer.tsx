@@ -68,7 +68,7 @@ class BattleGroundContainer extends React.Component<IProps> {
       opponentPartyIds: [5, 8, 123]
     });
     selectPokemon({ id: 5, trainer: "opponent" });
-    selectPokemon({ id: 2, trainer: "player" });
+    selectPokemon({ id: playerPartyIds[0], trainer: "player" });
   }
 
   componentDidUpdate() {
@@ -181,7 +181,15 @@ class BattleGroundContainer extends React.Component<IProps> {
 
   render() {
     return (
-      <Paper style={{ padding: 10 }}>
+      <Paper
+        style={{
+          padding: 10,
+          width: "22vw",
+          marginLeft: "39vw",
+          marginRight: "39vw",
+          marginTop: "30vh"
+        }}
+      >
         <OpponentContainer />
         <PlayerContainer />
         <BattleInfoContainer
