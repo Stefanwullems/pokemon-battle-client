@@ -1,5 +1,11 @@
 # pokemon-battle
 
+## Instructions
+    git clone git@github.com:Stefanwullems/wbcl_pokemon-battle-client.git
+    cd wbcl_pokemon-battle-client
+    yarn install
+    yarn start
+
 ### Contributors
 Vince Liem: https://github.com/sileniced
 Claudio Silva: https://github.com/Prophetaa
